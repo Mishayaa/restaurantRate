@@ -19,6 +19,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 
 import java.util.Arrays;
@@ -64,6 +65,8 @@ public class SecurityConfig {
                         }
                 ))
                 .csrf(AbstractHttpConfigurer::disable)
+                .authorizeHttpRequests(requests -> requests.antMatchers("/api/auth/login/home").permitAll())
+
                 .authorizeHttpRequests(requests -> requests.requestMatchers(PUBLIC_URLS).permitAll())
                 .authorizeHttpRequests(request -> request.anyRequest().authenticated())
                 .addFilterBefore(

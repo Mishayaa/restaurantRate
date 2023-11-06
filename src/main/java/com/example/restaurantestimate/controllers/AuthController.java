@@ -24,7 +24,6 @@ import static org.springframework.http.HttpStatus.OK;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping()
 public class AuthController {
     private final AuthenticationService authenticationService;
     public static final String AUTH_CONTROLLER_LOGIN_PATH = "/api/auth/login";
@@ -94,6 +93,11 @@ public class AuthController {
     public ResponseEntity<AuthTokenDtoResponse> refreshToken(HttpServletRequest request) throws IOException {
         AuthTokenDtoResponse response = authenticationService.refreshToken(request);
         return new ResponseEntity<>(response, OK);
+
+    }
+    @GetMapping("/api/auth/login/home")
+    public String  home()  {
+        return "Hello epta";
 
     }
 
