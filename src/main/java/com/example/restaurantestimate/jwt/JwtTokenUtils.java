@@ -32,7 +32,7 @@ public class JwtTokenUtils {
     @Value("${jwt.secret-key}")
     private String secretKey;
 
-    @Value("${jwt.lifetime}")
+    @Value("24")
     private long lifetime;
 
     public JwtToken createToken(User user, UserDetails userDetails) {
