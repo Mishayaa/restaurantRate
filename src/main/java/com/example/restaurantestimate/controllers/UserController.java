@@ -3,6 +3,7 @@ package com.example.restaurantestimate.controllers;
 
 import com.example.restaurantestimate.dto.AuthTokenDtoResponse;
 import com.example.restaurantestimate.dto.ResponseMessage;
+import com.example.restaurantestimate.services.AuthenticationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -24,6 +25,7 @@ import static org.springframework.http.HttpStatus.OK;
 @RequiredArgsConstructor
 public class UserController {
     private UserService userService;
+    private AuthenticationService authenticationService;
     public static final String USER_CONTROLLER_PATH = "/api/users";
 
     @Autowired
@@ -59,7 +61,7 @@ public class UserController {
     })
     @PostMapping(value = USER_CONTROLLER_PATH, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AuthTokenDtoResponse> createUser(@RequestBody UserRegistrationDtoRequest authRegistrationRequest) {
-        return new ResponseEntity<>(userService.createUser(authRegistrationRequest), CREATED);
+        return new ResponseEntity<>(authenticationService.createUser(authRegistrationRequest), CREATED);
     }
 
     @Operation(summary = "Получить пользователя", description = """

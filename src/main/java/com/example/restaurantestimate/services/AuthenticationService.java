@@ -1,19 +1,23 @@
 package com.example.restaurantestimate.services;
 
+import com.example.restaurantestimate.configs.EncoderConfig;
 import com.example.restaurantestimate.dto.AuthTokenDtoResponse;
 import com.example.restaurantestimate.dto.ResponseMessage;
 import com.example.restaurantestimate.dto.user.UserDtoLoginRequest;
+import com.example.restaurantestimate.dto.user.UserRegistrationDtoRequest;
 import com.example.restaurantestimate.entities.DeactivatedToken;
 import com.example.restaurantestimate.entities.Token;
 import com.example.restaurantestimate.entities.User;
 import com.example.restaurantestimate.exceptions.BearerHeaderNotFound;
 import com.example.restaurantestimate.exceptions.DeactivatedTokenException;
+import com.example.restaurantestimate.exceptions.EntityAlreadyExistException;
 import com.example.restaurantestimate.exceptions.InvalidJwtSubject;
 import com.example.restaurantestimate.jwt.JwtToken;
 import com.example.restaurantestimate.mappers.AccessTokenSerializer;
 import com.example.restaurantestimate.repositories.DeactivatedTokenRepository;
 import com.example.restaurantestimate.repositories.TokenRepository;
 import com.example.restaurantestimate.jwt.JwtTokenUtils;
+import com.example.restaurantestimate.repositories.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,6 +36,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.Instant;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -47,9 +52,14 @@ public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
     private final JwtTokenUtils jwtTokenUtils;
     private final AccessTokenSerializer accessTokenSerializer;
+    private final UserRepository userRepository;
+
     private UserService userService;
     private final TokenRepository tokenRepository;
     private final DeactivatedTokenRepository deactivatedTokenRepository;
+    private final RoleService roleService;
+
+    private EncoderConfig encoderConfig;
 
     @Autowired
     public void setUserService(UserService userService) {
@@ -67,6 +77,36 @@ public class AuthenticationService {
         UserDetails userDetails = userService.loadUserByUsername(authLoginRequest.getUsername());
         User user = userService.findByUsername(userDetails.getUsername());
 
+        JwtToken accessToken = jwtTokenUtils.createToken(user, userDetails);
+        String accessTokenString = accessTokenSerializer.apply(accessToken);
+
+        Token tokens = Token.builder()
+                .accessToken(accessTokenString)
+                .accessTokenExpiry(accessToken.getExpiredAt().toString())
+                .build();
+
+        tokenRepository.save(tokens);
+
+        return AuthTokenDtoResponse.builder()
+                .accessToken(accessTokenString)
+                .build();
+    }
+
+    @Transactional
+    public AuthTokenDtoResponse createUser(UserRegistrationDtoRequest authRegistrationRequest) {
+        Optional<User> userInDbWithUsername = userRepository.findByUsername(authRegistrationRequest.getUsername());
+        Optional<User> userInDbWithEmail = userRepository.findByEmail(authRegistrationRequest.getEmail());
+        if (userInDbWithUsername.isPresent() || userInDbWithEmail.isPresent()) {
+            throw new EntityAlreadyExistException("Пользователь с таким именем или email уже существует");
+        }
+
+        User user = new User();
+        user.setEmail(authRegistrationRequest.getEmail());
+        user.setUsername(authRegistrationRequest.getUsername());
+        user.setPassword(encoderConfig.passwordEncoder().encode(authRegistrationRequest.getPassword()));
+        user.setRoles(List.of(roleService.getUserRole()));
+        userRepository.save(user);
+        UserDetails userDetails = userService.loadUserByUsername(user.getUsername());
         JwtToken accessToken = jwtTokenUtils.createToken(user, userDetails);
         String accessTokenString = accessTokenSerializer.apply(accessToken);
 

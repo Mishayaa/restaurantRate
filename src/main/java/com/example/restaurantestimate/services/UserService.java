@@ -40,18 +40,9 @@ import java.util.Optional;
 @Slf4j
 public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
-    private final RoleService roleService;
-    private final JwtTokenUtils jwtTokenUtils;
-    private final UserService userService;
-    private final AccessTokenSerializer accessTokenSerializer;
-    private final TokenRepository tokenRepository;
-    private EncoderConfig encoderConfig;
     private final UserSerializer userSerializer;
 
-    @Autowired
-    public void setEncoderConfig(EncoderConfig encoderConfig) {
-        this.encoderConfig = encoderConfig;
-    }
+
 
     public User findByUsername(String username) {
         return userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException(
@@ -96,37 +87,7 @@ public class UserService implements UserDetailsService {
         );
     }
 
-    @Transactional
-    public AuthTokenDtoResponse createUser(UserRegistrationDtoRequest authRegistrationRequest) {
-        Optional<User> userInDbWithUsername = userRepository.findByUsername(authRegistrationRequest.getUsername());
-        Optional<User> userInDbWithEmail = userRepository.findByEmail(authRegistrationRequest.getEmail());
-        if (userInDbWithUsername.isPresent() || userInDbWithEmail.isPresent()) {
-            throw new EntityAlreadyExistException("Пользователь с таким именем или email уже существует");
-        }
-        if (!Objects.equals(authRegistrationRequest.getPassword(), authRegistrationRequest.getConfirmPassword())) {
-            throw new PasswordException("Пароль и потверждающий пароль не совпадают");
-        }
-        User user = new User();
-        user.setEmail(authRegistrationRequest.getEmail());
-        user.setUsername(authRegistrationRequest.getUsername());
-        user.setPassword(encoderConfig.passwordEncoder().encode(authRegistrationRequest.getPassword()));
-        user.setRoles(List.of(roleService.getUserRole()));
-        userRepository.save(user);
-        UserDetails userDetails = userService.loadUserByUsername(user.getUsername());
-        JwtToken accessToken = jwtTokenUtils.createToken(user, userDetails);
-        String accessTokenString = accessTokenSerializer.apply(accessToken);
 
-        Token tokens = Token.builder()
-                .accessToken(accessTokenString)
-                .accessTokenExpiry(accessToken.getExpiredAt().toString())
-                .build();
-
-        tokenRepository.save(tokens);
-
-        return AuthTokenDtoResponse.builder()
-                .accessToken(accessTokenString)
-                .build();
-    }
 
     public User getCurrentUser() {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
