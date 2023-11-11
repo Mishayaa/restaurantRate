@@ -58,8 +58,13 @@ public class AuthenticationService {
     private final TokenRepository tokenRepository;
     private final DeactivatedTokenRepository deactivatedTokenRepository;
     private final RoleService roleService;
-
     private EncoderConfig encoderConfig;
+
+    @Autowired
+    public void setEncoderConfig(EncoderConfig encoderConfig) {
+        this.encoderConfig = encoderConfig;
+    }
+
 
     @Autowired
     public void setUserService(UserService userService) {

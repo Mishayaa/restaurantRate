@@ -25,8 +25,15 @@ import static org.springframework.http.HttpStatus.OK;
 @RequiredArgsConstructor
 public class UserController {
     private UserService userService;
+
+
     private AuthenticationService authenticationService;
     public static final String USER_CONTROLLER_PATH = "/api/users";
+
+    @Autowired
+    public void setAuthenticationService(AuthenticationService authenticationService) {
+        this.authenticationService = authenticationService;
+    }
 
     @Autowired
     public void setUserService(UserService userService) {
