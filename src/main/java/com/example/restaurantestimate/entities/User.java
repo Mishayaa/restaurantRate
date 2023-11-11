@@ -6,7 +6,9 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -41,5 +43,8 @@ public class User {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private List<Role> roles;
+    @OneToMany
+    private Set<Restaurant> favorites = new HashSet<>();
+
 
 }

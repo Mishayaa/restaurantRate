@@ -1,15 +1,18 @@
 package com.example.restaurantestimate.services;
 
 import com.example.restaurantestimate.configs.EncoderConfig;
-import com.example.restaurantestimate.dto.UserRegistrationDtoRequest;
-import com.example.restaurantestimate.dto.UserDtoResponse;
+import com.example.restaurantestimate.dto.user.UserRegistrationDtoRequest;
+import com.example.restaurantestimate.dto.user.UserDtoResponse;
+import com.example.restaurantestimate.entities.Restaurant;
 import com.example.restaurantestimate.entities.User;
 import com.example.restaurantestimate.exceptions.EntityAlreadyExistException;
 import com.example.restaurantestimate.exceptions.PasswordException;
 import com.example.restaurantestimate.mappers.UserSerializer;
 import com.example.restaurantestimate.repositories.UserRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.Lazy;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +20,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
+
 
 import org.springframework.transaction.annotation.Transactional;
 
@@ -59,6 +62,17 @@ public class UserService implements UserDetailsService {
         return userSerializer.apply(user);
     }
 
+    @Transactional
+    public Page<Restaurant> getUserFavorites(Long userId, PageRequest pageRequest) {
+        return userRepository.getFavorites(userId, pageRequest);
+    }
+
+    public boolean isFavoriteMovieForCurrentUser(Long userId, Long movieId) {
+        User user = userRepository.findById(userId).orElseThrow();
+        return user.getFavorites().stream()
+                .anyMatch(e -> e.getId().equals(movieId));
+    }
+
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -90,5 +104,15 @@ public class UserService implements UserDetailsService {
         userRepository.save(user);
 
         return userSerializer.apply(user);
+    }
+
+    public User getCurrentUser() {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new EntityNotFoundException("User not found!"));
+    }
+
+    public void updateUser(User user) {
+        userRepository.save(user);
     }
 }

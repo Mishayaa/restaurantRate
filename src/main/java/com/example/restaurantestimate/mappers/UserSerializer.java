@@ -1,6 +1,6 @@
 package com.example.restaurantestimate.mappers;
 
-import com.example.restaurantestimate.dto.UserDtoResponse;
+import com.example.restaurantestimate.dto.user.UserDtoResponse;
 import com.example.restaurantestimate.entities.User;
 import org.springframework.stereotype.Component;
 

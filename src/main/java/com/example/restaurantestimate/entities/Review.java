@@ -3,6 +3,11 @@ package com.example.restaurantestimate.entities;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.DecimalMax;
+import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.Size;
+
+@Builder
 @Entity
 @Getter
 @Setter
@@ -18,16 +23,19 @@ public class Review {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name="user_id")
+    @JoinColumn(name = "user_id")
     private User user;
 
     @ManyToOne
-    @JoinColumn(name="restaurant_id")
+    @JoinColumn(name = "restaurant_id")
     private Restaurant restaurant;
 
-    private String text;
+    @Column(name = "userReview", columnDefinition = "TEXT")
+    @Size(max = 1000, message = "review is too big.")
+    private String userReview;
 
-    @Enumerated(EnumType.STRING)
-    private Rating rating;
+    @DecimalMin(value = "0.0", message = "Rating can't be less than 0.0")
+    @DecimalMax(value = "5.0", message = "Rating can't be more than 5.0")
+    private Double rating;
 
 }

@@ -2,15 +2,15 @@ package com.example.restaurantestimate.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Data
-@NoArgsConstructor
+@Getter
 @AllArgsConstructor
 @Builder
-public class UserDtoResponse {
-    private Long id;
-    private String username;
-    private String email;
+@NoArgsConstructor
+public class ReviewDtoRequest {
+    private Long restaurantId;
+    private String review;
+    private Double rating;
 }
