@@ -11,34 +11,35 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.persistence.EntityNotFoundException;
+import java.net.URI;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class ExternalApiService {
-   @Value("DCDED1FC65564519AA0C56B19AEA4634")
+    @Value("h3lrZ6nKjg2Bo-g5KFHBsaRyc-BFZQz8wwIdOyDweNUo6rZv6rm7bTcu0vn9t4rE7w3zgTUJ9WbiyYBin3BQR04l6MpSxxY42B7dYbNjaCRCPFonXcS2EMyOHalPZXYx")
     private String apiKey;
-    private final ExternalAPISerializer externalAPISerializer;
 
+    private final ExternalAPISerializer externalAPISerializer;
     public RestaurantPages findRestaurantByName(String name, Integer page, Integer limit) {
-        String url = UriComponentsBuilder.newInstance()
+        URI url = UriComponentsBuilder.newInstance()
                 .scheme("https")
-                .host("api.tripadvisor.com")
-                .path("v2/restaurant")
-                .queryParam("selectFields", "id", "name", "rating",
-                        "image_url", "cuisines", "description")
-                .queryParam("name", name)
+                .host("api.yelp.com")
+                .path("/v3/businesses/search")
+                .queryParam("term", name)
                 .queryParam("limit", limit)
-                .queryParam("page", page)
+                .queryParam("offset", page * limit)
                 .build()
-                .toUriString();
+                .toUri();
+
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.set("X-API-KEY", apiKey);

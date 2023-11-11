@@ -1,19 +1,10 @@
 package com.example.restaurantestimate.services;
 
-import com.example.restaurantestimate.configs.EncoderConfig;
-import com.example.restaurantestimate.dto.AuthTokenDtoResponse;
-import com.example.restaurantestimate.dto.user.UserRegistrationDtoRequest;
+
 import com.example.restaurantestimate.dto.user.UserDtoResponse;
 import com.example.restaurantestimate.entities.Restaurant;
-import com.example.restaurantestimate.entities.Token;
 import com.example.restaurantestimate.entities.User;
-import com.example.restaurantestimate.exceptions.EntityAlreadyExistException;
-import com.example.restaurantestimate.exceptions.PasswordException;
-import com.example.restaurantestimate.jwt.JwtToken;
-import com.example.restaurantestimate.jwt.JwtTokenUtils;
-import com.example.restaurantestimate.mappers.AccessTokenSerializer;
 import com.example.restaurantestimate.mappers.UserSerializer;
-import com.example.restaurantestimate.repositories.TokenRepository;
 import com.example.restaurantestimate.repositories.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -21,7 +12,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -31,9 +21,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+
 
 @Service
 @RequiredArgsConstructor
@@ -41,7 +29,6 @@ import java.util.Optional;
 public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
     private final UserSerializer userSerializer;
-
 
 
     public User findByUsername(String username) {
@@ -86,7 +73,6 @@ public class UserService implements UserDetailsService {
                         .toList()
         );
     }
-
 
 
     public User getCurrentUser() {

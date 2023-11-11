@@ -13,6 +13,7 @@ import static javax.swing.text.html.FormSubmitEvent.MethodType.POST;
 public class ConstUrls {
     public static final RequestMatcher PUBLIC_URLS = new OrRequestMatcher(
             new AntPathRequestMatcher(AUTH_CONTROLLER_REFRESH_TOKEN_PATH, GET.toString()),
+            new AntPathRequestMatcher(AUTH_CONTROLLER_REFRESH_TOKEN_PATH, GET.toString()),
             new AntPathRequestMatcher(AUTH_CONTROLLER_LOGIN_PATH, POST.toString()),
             new AntPathRequestMatcher(USER_CONTROLLER_PATH, POST.toString()),
             new AntPathRequestMatcher("/api/auth/login/home"),

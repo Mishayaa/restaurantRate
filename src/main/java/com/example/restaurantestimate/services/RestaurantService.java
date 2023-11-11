@@ -19,9 +19,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.HttpClientErrorException;
 
 
 import javax.persistence.EntityNotFoundException;
@@ -109,18 +109,27 @@ public class RestaurantService {
 
     @Transactional
     public RestaurantPages getRestaurantsByName(String name, Boolean findOnTrip, Integer page, Integer limit) {
-        if (Boolean.TRUE.equals(findOnTrip)) {
-            RestaurantPages tripRestaurant = externalApiService.findRestaurantByName(name, page, limit);
-            List<Restaurant> restaurants = tripRestaurant.getRestaurants().stream()
-                    .filter(e -> restaurantRepository.findById(e.getId()).isEmpty())
-                    .map(restaurantSerializer)
-                    .toList();
+        try {
+            if (Boolean.TRUE.equals(findOnTrip)) {
+                if (Boolean.TRUE.equals(findOnTrip)) {
+                    RestaurantPages tripRestaurant = externalApiService.findRestaurantByName(name, page, limit);
+                    List<Restaurant> restaurants = tripRestaurant.getRestaurants().stream()
+                            .filter(e -> restaurantRepository.findById(e.getId()).isEmpty())
+                            .map(restaurantSerializer)
+                            .toList();
 
-            restaurantRepository.saveAll(restaurants);
+                    restaurantRepository.saveAll(restaurants);
 
-            return tripRestaurant;
+                    return tripRestaurant;
+                }
+
+            }
+        } catch (HttpClientErrorException e) {
+            if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
+                log.error("Ресурс не найден: " + e.getStatusText());
+            }
         }
-
+        System.out.println("HHHHHHHHHHHHUUUUUUUUUUUUUIIIIIIIIIIIIII");
         PageRequest pageRequest = PageRequest.of(page - 1, limit);
         Page<Restaurant> restaurantPage = restaurantCustomRepository.searchBy(name, pageRequest, "name");
         return pageMapper.buildRestaurantPage(limit, page, restaurantPage);
