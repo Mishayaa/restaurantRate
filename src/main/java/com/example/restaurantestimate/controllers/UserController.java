@@ -1,6 +1,7 @@
 package com.example.restaurantestimate.controllers;
 
 
+import com.example.restaurantestimate.dto.AuthTokenDtoResponse;
 import com.example.restaurantestimate.dto.ResponseMessage;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -56,10 +57,9 @@ public class UserController {
                     }
             )
     })
-    @PostMapping(value = USER_CONTROLLER_PATH , consumes = MediaType.APPLICATION_JSON_VALUE )
-    public ResponseEntity<UserDtoResponse> createUser(@RequestBody UserRegistrationDtoRequest authRegistrationRequest) {
-        UserDtoResponse userDto = userService.createUser(authRegistrationRequest);
-        return new ResponseEntity<>(userDto, CREATED);
+    @PostMapping(value = USER_CONTROLLER_PATH, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<AuthTokenDtoResponse> createUser(@RequestBody UserRegistrationDtoRequest authRegistrationRequest) {
+        return new ResponseEntity<>(userService.createUser(authRegistrationRequest), CREATED);
     }
 
     @Operation(summary = "Получить пользователя", description = """

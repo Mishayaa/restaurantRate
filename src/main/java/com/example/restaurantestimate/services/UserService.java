@@ -1,13 +1,19 @@
 package com.example.restaurantestimate.services;
 
 import com.example.restaurantestimate.configs.EncoderConfig;
+import com.example.restaurantestimate.dto.AuthTokenDtoResponse;
 import com.example.restaurantestimate.dto.user.UserRegistrationDtoRequest;
 import com.example.restaurantestimate.dto.user.UserDtoResponse;
 import com.example.restaurantestimate.entities.Restaurant;
+import com.example.restaurantestimate.entities.Token;
 import com.example.restaurantestimate.entities.User;
 import com.example.restaurantestimate.exceptions.EntityAlreadyExistException;
 import com.example.restaurantestimate.exceptions.PasswordException;
+import com.example.restaurantestimate.jwt.JwtToken;
+import com.example.restaurantestimate.jwt.JwtTokenUtils;
+import com.example.restaurantestimate.mappers.AccessTokenSerializer;
 import com.example.restaurantestimate.mappers.UserSerializer;
+import com.example.restaurantestimate.repositories.TokenRepository;
 import com.example.restaurantestimate.repositories.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -35,6 +41,10 @@ import java.util.Optional;
 public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
     private final RoleService roleService;
+    private final JwtTokenUtils jwtTokenUtils;
+    private final UserService userService;
+    private final AccessTokenSerializer accessTokenSerializer;
+    private final TokenRepository tokenRepository;
     private EncoderConfig encoderConfig;
     private final UserSerializer userSerializer;
 
@@ -87,7 +97,7 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional
-    public UserDtoResponse createUser(UserRegistrationDtoRequest authRegistrationRequest) {
+    public AuthTokenDtoResponse createUser(UserRegistrationDtoRequest authRegistrationRequest) {
         Optional<User> userInDbWithUsername = userRepository.findByUsername(authRegistrationRequest.getUsername());
         Optional<User> userInDbWithEmail = userRepository.findByEmail(authRegistrationRequest.getEmail());
         if (userInDbWithUsername.isPresent() || userInDbWithEmail.isPresent()) {
@@ -102,8 +112,20 @@ public class UserService implements UserDetailsService {
         user.setPassword(encoderConfig.passwordEncoder().encode(authRegistrationRequest.getPassword()));
         user.setRoles(List.of(roleService.getUserRole()));
         userRepository.save(user);
+        UserDetails userDetails = userService.loadUserByUsername(user.getUsername());
+        JwtToken accessToken = jwtTokenUtils.createToken(user, userDetails);
+        String accessTokenString = accessTokenSerializer.apply(accessToken);
 
-        return userSerializer.apply(user);
+        Token tokens = Token.builder()
+                .accessToken(accessTokenString)
+                .accessTokenExpiry(accessToken.getExpiredAt().toString())
+                .build();
+
+        tokenRepository.save(tokens);
+
+        return AuthTokenDtoResponse.builder()
+                .accessToken(accessTokenString)
+                .build();
     }
 
     public User getCurrentUser() {
