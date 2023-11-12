@@ -21,7 +21,6 @@ public class ConstUrls {
             new AntPathRequestMatcher(AUTH_CONTROLLER_LOGIN_PATH, POST.toString()),
             new AntPathRequestMatcher(AUTH_CONTROLLER_LOGIN_PATH, GET.toString()),
             new AntPathRequestMatcher(USER_CONTROLLER_PATH, POST.toString()),
-            new AntPathRequestMatcher(USER_CONTROLLER_PATH, GET.toString()),
             new AntPathRequestMatcher(RESTAURANT_CONTROLLER_PATH+"/restaurantsNames",GET.toString()),
             new AntPathRequestMatcher(RESTAURANT_CONTROLLER_PATH_USERS+"/**",GET.toString()),
             new AntPathRequestMatcher(RESTAURANT_CONTROLLER_PATH+"/popular",GET.toString()),
