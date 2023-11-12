@@ -66,7 +66,7 @@ public class UserController {
                     }
             )
     })
-    @PostMapping(value = USER_CONTROLLER_PATH, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = USER_CONTROLLER_PATH)
     public ResponseEntity<AuthTokenDtoResponse> createUser(@RequestBody UserRegistrationDtoRequest authRegistrationRequest) {
         return new ResponseEntity<>(authenticationService.createUser(authRegistrationRequest), CREATED);
     }
