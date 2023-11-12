@@ -10,6 +10,8 @@ import lombok.ToString;
 
 import javax.persistence.*;
 
+import javax.persistence.Entity;
+
 @Entity
 @Getter
 @Setter

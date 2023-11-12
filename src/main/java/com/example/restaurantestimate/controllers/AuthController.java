@@ -9,13 +9,14 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import com.example.restaurantestimate.dto.AuthTokenDtoResponse;
 import com.example.restaurantestimate.dto.user.UserDtoLoginRequest;
 import com.example.restaurantestimate.services.AuthenticationService;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
 
 import static org.springframework.http.HttpStatus.OK;

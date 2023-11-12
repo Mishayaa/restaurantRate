@@ -8,8 +8,9 @@ import org.hibernate.search.mapper.pojo.mapping.definition.annotation.Indexed;
 ;
 
 import javax.persistence.*;
-import javax.validation.constraints.DecimalMax;
-import javax.validation.constraints.DecimalMin;
+
+import jakarta.validation.constraints.DecimalMax;
+import jakarta.validation.constraints.DecimalMin;
 
 import java.util.HashSet;
 import java.util.List;
@@ -18,8 +19,8 @@ import java.util.Set;
 @Getter
 @Setter
 @Builder
-@Entity
 @AllArgsConstructor
+@Entity
 @ToString
 @NoArgsConstructor
 @Table(name = "restaurants")

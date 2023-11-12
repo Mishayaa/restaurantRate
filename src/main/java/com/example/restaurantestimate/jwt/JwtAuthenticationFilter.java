@@ -5,6 +5,10 @@ import com.example.restaurantestimate.dto.ResponseMessage;
 import com.example.restaurantestimate.repositories.DeactivatedTokenRepository;
 import com.example.restaurantestimate.services.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,10 +20,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
 import java.time.Instant;
 
@@ -30,12 +31,22 @@ import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 
 @Component
-@RequiredArgsConstructor
-@Slf4j
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
-    private final JwtTokenUtils jwtTokenUtils;
+    private JwtTokenUtils jwtTokenUtils;
     private UserService userService;
-    private final DeactivatedTokenRepository deactivatedTokenRepository;
+    private DeactivatedTokenRepository deactivatedTokenRepository;
+
+    @Autowired
+
+    public void setJwtTokenUtils(JwtTokenUtils jwtTokenUtils) {
+        this.jwtTokenUtils = jwtTokenUtils;
+    }
+
+    @Autowired
+
+    public void setDeactivatedTokenRepository(DeactivatedTokenRepository deactivatedTokenRepository) {
+        this.deactivatedTokenRepository = deactivatedTokenRepository;
+    }
 
     @Autowired
     public void setUserService(UserService userService) {
@@ -48,7 +59,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             @NonNull HttpServletResponse response,
             @NonNull FilterChain filterChain
     ) throws ServletException, IOException {
-
         if (PUBLIC_URLS.matches(request)) {
             filterChain.doFilter(request, response);
             return;

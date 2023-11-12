@@ -74,7 +74,7 @@ public class RestaurantController {
     @Operation(summary = "Get all users restaurants", description =
             """
                     Return all users restaurants which he added to his collection with his review and rating
-                                   
+
                     """)
     @ApiResponses(value = {
             @ApiResponse(
@@ -198,7 +198,7 @@ public class RestaurantController {
     @Operation(summary = "Universal search", description =
             """
                     Search restaurant from DB or from TripAdvisorApi.
-                                        
+
                      """)
     @ApiResponses(value = {
             @ApiResponse(

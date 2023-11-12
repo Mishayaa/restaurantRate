@@ -1,14 +1,15 @@
 package com.example.restaurantestimate.repositories;
 
+
 import com.example.restaurantestimate.entities.QReview;
 import com.example.restaurantestimate.entities.QUser;
 import com.example.restaurantestimate.entities.Restaurant;
 
 import com.example.restaurantestimate.repositories.filters.CuisineFilter;
 import com.example.restaurantestimate.repositories.filters.UserIdFilter;
-import com.querydsl.jpa.impl.JPAQuery;
 import lombok.RequiredArgsConstructor;
 
+import org.hibernate.Session;
 import org.hibernate.search.engine.search.query.SearchResult;
 import org.hibernate.search.mapper.orm.Search;
 import org.hibernate.search.mapper.orm.session.SearchSession;
@@ -16,14 +17,17 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
+import com.querydsl.jpa.impl.JPAQuery;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Tuple;
+
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 import static com.example.restaurantestimate.entities.QRestaurant.restaurant;
+
 
 @Component
 @RequiredArgsConstructor
@@ -38,7 +42,7 @@ public class RestaurantCustomRepositoryImpl {
     }
 
     private SearchResult<Restaurant> getSearchResult(String text, PageRequest pageRequest, String... fields) {
-        SearchSession searchSession = Search.session(entityManager);
+        SearchSession searchSession = Search.session((Session) entityManager);
 
         return searchSession
                 .search(Restaurant.class)
@@ -83,7 +87,7 @@ public class RestaurantCustomRepositoryImpl {
         JPAQuery<Restaurant> query = new JPAQuery<>(entityManager)
                 .select(restaurant)
                 .from(restaurant)
-                .join(review).on(restaurant.id.eq(review.restaurant.id))
+              .join(review).on(restaurant.id.eq(review.restaurant.id))
                 .join(user).on(user.id.eq(review.user.id))
                 .where(review.user.id.eq(filter.getUserId()))
                 .orderBy(review.id.desc());
