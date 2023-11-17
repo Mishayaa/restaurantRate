@@ -44,6 +44,7 @@ public class RestaurantMapper {
                 .cuisines(restaurant.getCuisines().stream()
                         .map(e -> new CuisineDto(e.getName()))
                         .collect(Collectors.toSet()))
+
                 .isFavorite(userService.isFavoriteMovieForCurrentUser(userId, restaurant.getId()))
                 .build();
     }

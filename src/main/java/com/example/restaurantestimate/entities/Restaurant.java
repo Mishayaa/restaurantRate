@@ -1,6 +1,8 @@
 package com.example.restaurantestimate.entities;
 
 
+import com.example.restaurantestimate.dto.google.Geometry;
+import com.example.restaurantestimate.dto.google.OpeningHours;
 import com.querydsl.core.annotations.QueryEntity;
 import lombok.*;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.FullTextField;
@@ -28,7 +30,7 @@ import java.util.Set;
 public class Restaurant {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     @FullTextField(name = "name")
     private String name;
@@ -49,6 +51,8 @@ public class Restaurant {
             inverseJoinColumns = @JoinColumn(name = "cuisines_id")
     )
     private Set<Cuisine> cuisines;
-    @Column(name = "poster_url")
+    @Column(name = "poster_url",length = 1000)
     private String posterUrl;
+    private String formatted_address;
+    private Boolean open_now;
 }

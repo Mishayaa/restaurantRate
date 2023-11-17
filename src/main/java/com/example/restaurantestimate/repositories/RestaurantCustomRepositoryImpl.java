@@ -54,14 +54,14 @@ public class RestaurantCustomRepositoryImpl {
         return entityManager.createQuery("""
                         SELECT m.id as id, m.name as name
                         FROM Restaurant m
-                        ORDER BY m.name LIMIT 20
+                        ORDER BY m.name
                         """, Tuple.class)
                 .getResultList()
                 .stream()
                 .collect(
                         Collectors.toMap(
                                 tuple -> ((Long) tuple.get("id")),
-                                tuple -> ((String) tuple.get("title"))
+                                tuple -> ((String) tuple.get("name"))
                         )
                 );
     }

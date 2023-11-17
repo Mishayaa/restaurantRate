@@ -3,6 +3,8 @@ package com.example.restaurantestimate.controllers;
 import com.example.restaurantestimate.dto.PageDto;
 import com.example.restaurantestimate.dto.ResponseMessage;
 import com.example.restaurantestimate.dto.restaurant.*;
+import com.example.restaurantestimate.entities.Restaurant;
+import com.example.restaurantestimate.services.GoogleRestaurantService;
 import com.example.restaurantestimate.services.RestaurantService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -32,7 +34,7 @@ import static org.springframework.http.HttpStatus.OK;
 public class RestaurantController {
 
     private final RestaurantService restaurantService;
-
+    private final GoogleRestaurantService googleRestaurantService;
     public static final String RESTAURANT_CONTROLLER_PATH = "/api/restaurant";
     public static final String RESTAURANT_CONTROLLER_PATH_USERS = "/api/restaurant/user";
     public static final String RESTAURANT_CONTROLLER_PATH_CUISINE = "/api/restaurant/cuisine";
@@ -62,11 +64,9 @@ public class RestaurantController {
     })
     @GetMapping(value = RESTAURANT_CONTROLLER_PATH + "/{restaurantId}")
     public ResponseEntity<RestaurantCard> getRestaurantById(@PathVariable("restaurantId")
-                                                            @Parameter(description = "restaurant ID", example = "1") Long restaurantId,
-                                                            @RequestParam(required = false, value = "findRst", defaultValue = "false")
-                                                            @Parameter(description = "Search by tripAdvisor. true - search on tripadvisor, "
-                                                                    + "false - in app bd.") Boolean findRst) {
-        RestaurantCard restaurant = restaurantService.getRestaurantById(restaurantId, findRst);
+                                                            @Parameter(description = "restaurant ID", example = "1") Long restaurantId
+    ) {
+        RestaurantCard restaurant = restaurantService.getRestaurantById(restaurantId);
         return new ResponseEntity<>(restaurant, OK);
     }
 
@@ -109,6 +109,41 @@ public class RestaurantController {
 
         UserRestaurantPage restaurants = restaurantService.getRestaurantsByUser(userId, page, limit);
         return new ResponseEntity<>(restaurants, OK);
+    }
+
+    @Operation(summary = "Find restaurants", description =
+            """
+                    Return all found restaurants
+
+                    """)
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "",
+                    content = {
+                            @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = RestaurantPages.class)
+                            )
+                    }
+            ),
+            @ApiResponse(
+                    responseCode = "422",
+                    description = "Restaurants not found",
+                    content = {
+                            @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = ResponseMessage.class)
+                            )
+                    }
+            )
+    })
+    @GetMapping(RESTAURANT_CONTROLLER_PATH + "/search")
+    public ResponseEntity<RestaurantPages> searchRestaurant(
+            @RequestParam String name,
+            @RequestParam(required = false, defaultValue = "1") Integer page,
+            @RequestParam(required = false, defaultValue = "10") Integer limit) {
+        return new ResponseEntity<>(googleRestaurantService.getRestaurantByName(name, page, limit), OK);
     }
 
     @Operation(summary = "Add movie to favourites")
@@ -195,72 +230,6 @@ public class RestaurantController {
         return new ResponseEntity<>(restaurantService.deleteFromFavorites(restaurantId), OK);
     }
 
-    @Operation(summary = "Universal search", description =
-            """
-                    Search restaurant from DB or from TripAdvisorApi.
-
-                     """)
-    @ApiResponses(value = {
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "Restaurants that match given param",
-                    content = {
-                            @Content(
-                                    mediaType = "application/json",
-                                    schema = @Schema(implementation = RestaurantPages.class)
-                            )
-                    }
-            )
-    })
-    @GetMapping(value = RESTAURANT_CONTROLLER_PATH)
-    public ResponseEntity<PageDto> getRestaurantsByName(
-            @RequestParam(value = "name") @Parameter(description = "Name",
-                    example = "Ukraine") String name,
-            @RequestParam(required = false, value = "page", defaultValue = "1")
-            @Parameter(description = "SelectionPage.") Integer page,
-            @RequestParam(required = false, value = "limit", defaultValue = "10")
-            @Parameter(description = "Quantity of elements on page.") Integer limit,
-            @RequestParam(required = false, value = "expanded", defaultValue = "false")
-            @Parameter(description = "Give full info about restaurants."
-                    + "true - return full info about restaurants, "
-                    + "false - only from drop-down list.") Boolean expanded,
-            @RequestParam(required = false, value = "findOnTrip", defaultValue = "false")
-            @Parameter(description = "Search by tripadvisor. true - search on tripadvisor, "
-                    + "false - in app db.") Boolean findOnTrip) {
-
-        if (Boolean.TRUE.equals(expanded)) {
-            return new ResponseEntity<>(restaurantService.getRestaurantsByName(name, findOnTrip, page, limit), OK);
-        }
-        return new ResponseEntity<>(restaurantService.getRestaurantByNameShortInfo(name, findOnTrip, page, limit), OK);
-    }
-
-    @Operation(summary = "Get restaurant by cuisine.", description =
-            """
-                    Return all restaurants with such cuisine.
-                                        """)
-    @ApiResponses(value = {
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "All restaurants from db with such cuisine",
-                    content = {
-                            @Content(
-                                    mediaType = "application/json",
-                                    schema = @Schema(implementation = RestaurantPages.class)
-                            )
-                    }
-            )
-    })
-    @GetMapping(value = RESTAURANT_CONTROLLER_PATH_CUISINE)
-    public ResponseEntity<RestaurantPages> findRestaurantByCuisine(
-            @RequestParam(value = "cuisineName") @Parameter(description = "Cuisine.",
-                    example = "Italian.") String cuisineName,
-            @RequestParam(required = false, value = "page", defaultValue = "1")
-            @Parameter(description = "Selection Page.") Integer page,
-            @RequestParam(required = false, value = "limit", defaultValue = "10")
-            @Parameter(description = "Quantity of elem on page.") Integer limit) {
-
-        return new ResponseEntity<>(restaurantService.getRestaurantsByCuisine(cuisineName, page, limit), OK);
-    }
 
     @Operation(summary = "Get names")
     @GetMapping(value = RESTAURANT_CONTROLLER_PATH + "/restaurantsNames")
@@ -286,7 +255,7 @@ public class RestaurantController {
     })
     @GetMapping(value = RESTAURANT_CONTROLLER_PATH + "/popular")
     public ResponseEntity<List<PopularRestaurantDto>> getPopularRestaurants(@RequestParam(required = false, defaultValue = "4")
-                                                                       Integer count) {
+                                                                            Integer count) {
         return new ResponseEntity<>(restaurantService.getPopularRestaurants(count), OK);
     }
 

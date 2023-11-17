@@ -23,8 +23,8 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
 
     Optional<Review> findAllByUserIdAndRestaurantId(Long userId, Long restaurantId);
 
-    @Query("SELECT r FROM Review r WHERE r.restaurant.id = :id ORDER BY id DESC")
-    List<Review> findRandomReviewByRestaurantId(@Param("id") Long restaurantId);
+    @Query("SELECT r FROM Review r WHERE r.restaurant.name = :name ORDER BY name DESC")
+    List<Review> findRandomReviewByRestaurantName(@Param("name") String restaurantName);
 
     Integer countByRestaurantId(Long movieId);
 

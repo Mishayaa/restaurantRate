@@ -41,7 +41,7 @@ public class RestaurantService {
     private final RestaurantRepository restaurantRepository;
     private final RestaurantCustomRepositoryImpl restaurantCustomRepository;
     private final RestaurantSerializer restaurantSerializer;
-    private final ExternalApiService externalApiService;
+    private final GoogleExternalApiService googleExternalApiService;
     private final RestaurantMapper restaurantMapper;
     private final PageMapper pageMapper;
     private final UserService userService;
@@ -91,16 +91,12 @@ public class RestaurantService {
                 .timestamp(Instant.now().toString())
                 .build();
     }
+    @Transactional
 
-    public RestaurantCard getRestaurantById(Long id, boolean findRst) {
+    public RestaurantCard getRestaurantById(Long id) {
         User user = userService.getCurrentUser();
         Optional<Restaurant> restaurantInDb = restaurantRepository.findById(id);
-        if (findRst && restaurantInDb.isEmpty()) {
-            RestaurantPages tripRestaurants = externalApiService.findRestaurantById(id);
-            Restaurant restaurant = restaurantSerializer.apply(tripRestaurants.getRestaurants().get(0));
-            restaurantRepository.save(restaurant);
-            return restaurantMapper.toRestaurantCard(restaurant, user.getId());
-        }
+
         Restaurant restaurant = restaurantInDb.orElseThrow(() ->
                 new EntityNotFoundException(String.format("Restaurant with such ID: '%s' was not found!", id)));
 
@@ -112,7 +108,7 @@ public class RestaurantService {
         try {
             if (Boolean.TRUE.equals(findOnTrip)) {
                 if (Boolean.TRUE.equals(findOnTrip)) {
-                    RestaurantPages tripRestaurant = externalApiService.findRestaurantByName(name, page, limit);
+                    RestaurantPages tripRestaurant = googleExternalApiService.findRestaurantByName(name, page, limit);
                     List<Restaurant> restaurants = tripRestaurant.getRestaurants().stream()
                             .filter(e -> restaurantRepository.findById(e.getId()).isEmpty())
                             .map(restaurantSerializer)
@@ -128,8 +124,9 @@ public class RestaurantService {
             if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
                 log.error("Ресурс не найден: " + e.getStatusText());
             }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-        System.out.println("HHHHHHHHHHHHUUUUUUUUUUUUUIIIIIIIIIIIIII");
         PageRequest pageRequest = PageRequest.of(page - 1, limit);
         Page<Restaurant> restaurantPage = restaurantCustomRepository.searchBy(name, pageRequest, "name");
         return pageMapper.buildRestaurantPage(limit, page, restaurantPage);
@@ -137,16 +134,7 @@ public class RestaurantService {
 
     @Transactional
     public RestaurantPagesShort getRestaurantByNameShortInfo(String name, Boolean findOnTrip, Integer page, Integer limit) {
-        if (Boolean.TRUE.equals(findOnTrip)) {
-            RestaurantPages tripRestaurants = externalApiService.findRestaurantByName(name, page, limit);
 
-            List<Restaurant> restaurants = tripRestaurants.getRestaurants().stream()
-                    .filter(e -> restaurantRepository.findById(e.getId()).isEmpty())
-                    .map(restaurantSerializer)
-                    .toList();
-            restaurantRepository.saveAll(restaurants);
-            return pageMapper.buildRestaurantPageShortFromTripAdv(limit, page, tripRestaurants, restaurants);
-        }
         PageRequest pageRequest = PageRequest.of(page - 1, limit);
         Page<Restaurant> restaurantPage = restaurantCustomRepository.searchBy(name, pageRequest, "name");
         return pageMapper.buildRestaurantPageShort(limit, page, restaurantPage);

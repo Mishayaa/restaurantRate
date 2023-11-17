@@ -4,6 +4,7 @@ import com.example.restaurantestimate.entities.Restaurant;
 
 import com.example.restaurantestimate.entities.Restaurant;
 import org.springframework.data.domain.Page;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.data.repository.CrudRepository;
@@ -15,5 +16,7 @@ import java.util.Optional;
 @Repository
 public interface RestaurantRepository extends CrudRepository<Restaurant, Long>, QuerydslPredicateExecutor<Restaurant> {
     Optional<Restaurant> findById(Long id);
+    Optional<Restaurant> findByName(String name);
     List<Restaurant> findAll();
+
 }

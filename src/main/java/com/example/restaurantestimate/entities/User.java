@@ -6,9 +6,11 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.Size;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
 @Entity
 @Getter
 @Setter
@@ -38,7 +40,9 @@ public class User {
     @Column(name = "password", nullable = false)
     @NotBlank(message = "Введите пароль чтобы зарегистрироваться")
     private String password;
-
+    @Column(name = "about", columnDefinition = "TEXT")
+    @Size(max = 1000, message = "Описание слишком большое, краткость сестра таланта.")
+    private String about;
     @OneToMany(mappedBy = "user")
     private List<Review> reviews;
     @ManyToMany

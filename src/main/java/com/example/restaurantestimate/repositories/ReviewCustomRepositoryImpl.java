@@ -4,11 +4,13 @@ package com.example.restaurantestimate.repositories;
 import com.example.restaurantestimate.dto.restaurant.PopularRestaurantDto;
 import com.example.restaurantestimate.entities.Restaurant;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.exception.SQLGrammarException;
 import org.springframework.stereotype.Component;
 
 
 import javax.persistence.EntityManager;
 import javax.persistence.Tuple;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
@@ -18,24 +20,22 @@ public class ReviewCustomRepositoryImpl {
     private final EntityManager entityManager;
 
     public List<PopularRestaurantDto> getPopularRestaurants(Integer count) {
-        return entityManager.createQuery("""
-                        SELECT r.restaurant as movie, COUNT(r.restaurant) as count
-                        FROM Review r
-                        GROUP BY r.restaurant
-                        """, Tuple.class)
+
+//        List<Restaurant> restaurants = entityManager.createQuery("SELECT r FROM Restaurant r", Restaurant.class)
+//                .setMaxResults(4)
+//                .getResultList();
+        List<Restaurant> restaurants = entityManager.createQuery("SELECT r FROM Restaurant r ORDER BY r.reviews.size DESC", Restaurant.class)
                 .setMaxResults(count)
-                .getResultList()
-                .stream()
-                .map(tuple -> {
-                    Restaurant restaurant = (Restaurant) tuple.get("restaurant");
-                    return PopularRestaurantDto.builder()
-                            .id(restaurant.getId())
-                            .name(restaurant.getName())
-                            .posterUrl(restaurant.getPosterUrl())
-                            .reviewCount((Long) tuple.get("count"))
-                            .build();
-                })
-                .sorted(Comparator.comparing(PopularRestaurantDto::getReviewCount))
-                .toList();
+                .getResultList();
+
+        List<PopularRestaurantDto> result = new ArrayList<>();
+        for (Restaurant rest : restaurants) {
+            result.add(PopularRestaurantDto.builder()
+                    .id(rest.getId())
+                    .name(rest.getName())
+                    .posterUrl(rest.getPosterUrl()).build());
+        }
+        return result;
+
     }
 }

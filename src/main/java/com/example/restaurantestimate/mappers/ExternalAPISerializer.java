@@ -21,25 +21,25 @@ public class ExternalAPISerializer implements Function<DocsItemRestaurantInfo, R
     @Override
     public RestaurantDto apply(DocsItemRestaurantInfo restaurantInfo) {
         return RestaurantDto.builder()
-                .id(restaurantInfo.getId())
-                .description(restaurantInfo.getDescription().orElse(""))
+               // .id(restaurantInfo.getId())
+               // .description(restaurantInfo.getDescription().orElse(""))
                 .name(restaurantInfo.getName())
-                .averageRating(reviewService.getAverageReviewRatingById(restaurantInfo.getId()))
-                .cuisines(
-                        restaurantInfo.getCuisines().stream()
-                                .map(e -> cuisineService.findCuisine(e.getName()))
-                                .map(e -> new CuisineDto(e.getName()))
-                                .collect(Collectors.toSet())
-                )
+//                .averageRating(reviewService.getAverageReviewRatingById(restaurantInfo.getId()))
+//                .cuisines(
+//                        restaurantInfo.getCuisines().stream()
+//                                .map(e -> cuisineService.findCuisine(e.getName()))
+//                                .map(e -> new CuisineDto(e.getName()))
+//                                .collect(Collectors.toSet())
+//                )
                 .posterUrl(restaurantInfo.getPoster() == null ? "" : restaurantInfo.getPoster().getUrl())
-                .reviews(reviewService.getRandomReviewsByRestaurantId(restaurantInfo.getId()).stream()
-                        .map(e -> new RestaurantReview(
-                                e.getId(),
-                                e.getUser(),
-                                e.getRating(),
-                                e.getReview())
-                        ).toList()
-                )
+              //  .reviews(reviewService.getRandomReviewsByRestaurantId(restaurantInfo.getId()).stream()
+//                        .map(e -> new RestaurantReview(
+//                                e.getId(),
+//                                e.getUser(),
+//                                e.getRating(),
+//                                e.getReview())
+//                        ).toList()
+//                )
                 .build();
     }
 }

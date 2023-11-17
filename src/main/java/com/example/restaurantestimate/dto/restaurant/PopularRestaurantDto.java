@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class PopularRestaurantDto {
-    private Long reviewCount;
+
     private Long id;
     private String name;
     private String posterUrl;

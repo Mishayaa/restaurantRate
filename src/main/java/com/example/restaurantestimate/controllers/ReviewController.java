@@ -110,7 +110,7 @@ public class ReviewController {
         if (userId != null && restaurantId != null) {
             return new ResponseEntity<>(reviewService.getReviewByUserIdAndMovieId(userId, restaurantId), OK);
         } else if (restaurantId != null) {
-            return new ResponseEntity<>(reviewService.getReviewByMovieId(restaurantId, page, limit), OK);
+            return new ResponseEntity<>(reviewService.getReviewByRestaurantId(restaurantId, page, limit), OK);
         } else if (userId != null) {
             return new ResponseEntity<>(reviewService.getReviewByUserId(userId, page, limit), OK);
         }

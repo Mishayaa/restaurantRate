@@ -92,9 +92,9 @@ public class ReviewService {
     }
 
     @Transactional
-    public ReviewPages getReviewByMovieId(Long movieId, Integer page, Integer limit) {
+    public ReviewPages getReviewByRestaurantId(Long restaurantId, Integer page, Integer limit) {
         PageRequest pageRequest = PageRequest.of(page - 1, limit);
-        Page<Review> reviewPage = reviewRepository.findAllByRestaurantId(movieId, pageRequest);
+        Page<Review> reviewPage = reviewRepository.findAllByRestaurantId(restaurantId, pageRequest);
 
         List<ReviewDto> reviews = reviewPage.getContent().stream()
                 .map(reviewSerializer)
@@ -180,8 +180,8 @@ public class ReviewService {
         return Math.round(avg * 10.0) / 10.0;
     }
 
-    public List<ReviewDto> getRandomReviewsByRestaurantId(Long restaurantId) {
-        return reviewRepository.findRandomReviewByRestaurantId(restaurantId).stream()
+    public List<ReviewDto> getRandomReviewsByRestaurantName(String restaurantName) {
+        return reviewRepository.findRandomReviewByRestaurantName(restaurantName).stream()
                 .map(reviewSerializer)
                 .toList();
     }

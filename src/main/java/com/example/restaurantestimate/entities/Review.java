@@ -19,7 +19,7 @@ import jakarta.validation.constraints.Size;
 public class Review {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @ManyToOne

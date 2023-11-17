@@ -3,6 +3,7 @@ package com.example.restaurantestimate.mappers;
 import com.example.restaurantestimate.dto.CuisineDto;
 import com.example.restaurantestimate.dto.restaurant.RestaurantDto;
 import com.example.restaurantestimate.dto.restaurant.RestaurantReview;
+import com.example.restaurantestimate.dto.review.ReviewDto;
 import com.example.restaurantestimate.entities.Restaurant;
 import com.example.restaurantestimate.services.ReviewService;
 import lombok.RequiredArgsConstructor;
@@ -25,18 +26,16 @@ public class RestaurantDtoSerializer implements Function<Restaurant, RestaurantD
                 .description(restaurant.getDescription())
                 .posterUrl(restaurant.getPosterUrl())
                 .name(restaurant.getName())
-                .averageRating(reviewService.getAverageReviewRatingById(restaurant.getId()))
-                .cuisines(restaurant.getCuisines().stream()
-                        .map(e -> new CuisineDto(e.getName()))
-                        .collect(Collectors.toSet()))
                 .rating(restaurant.getRating())
                 .reviews(
-                        reviewService.getRandomReviewsByRestaurantId(restaurant.getId()).stream()
-                                .map(e -> new RestaurantReview(
-                                        e.getId(),
-                                        e.getUser(),
-                                        e.getRating(),
-                                        e.getReview())
+                        reviewService.getRandomReviewsByRestaurantName(restaurant.getName()).stream()
+                                .map(e -> new ReviewDto(
+                                                e.getId(),
+                                                e.getUser(),
+                                                e.getRestaurantId(),
+                                                e.getReview(),
+                                                e.getRating()
+                                        )
                                 ).toList()
                 )
                 .build();

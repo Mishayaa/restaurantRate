@@ -1,9 +1,11 @@
 package com.example.restaurantestimate.services;
 
 
+import com.example.restaurantestimate.dto.user.UserDtoAboutRequest;
 import com.example.restaurantestimate.dto.user.UserDtoResponse;
 import com.example.restaurantestimate.entities.Restaurant;
 import com.example.restaurantestimate.entities.User;
+import com.example.restaurantestimate.exceptions.CustomAccessDeniedException;
 import com.example.restaurantestimate.mappers.UserSerializer;
 import com.example.restaurantestimate.repositories.UserRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -83,5 +85,20 @@ public class UserService implements UserDetailsService {
 
     public void updateUser(User user) {
         userRepository.save(user);
+    }
+    @Transactional
+    public UserDtoResponse updateAbout(Long userId, UserDtoAboutRequest aboutRequest) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("Пользователь с данным ID не найден."));
+        User currentUser = getCurrentUser();
+        if (!user.getId().equals(currentUser.getId())) {
+            throw new CustomAccessDeniedException("Нельзя обновить данные другого пользователя!");
+        }
+
+        user.setId(userId);
+        user.setAbout(aboutRequest.getAbout());
+        userRepository.save(user);
+
+        return userSerializer.apply(user);
     }
 }
