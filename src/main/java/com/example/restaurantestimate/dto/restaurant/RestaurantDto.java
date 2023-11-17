@@ -28,10 +28,7 @@ public class RestaurantDto {
     private Geometry geometry;
     private String formatted_address;
     private OpeningHours opening_hours;
-    private String primaryType;
     private List<ReviewDto> reviews;
-    private String photo;
-    private String description;
-    private String cuisines;
+
 
 }

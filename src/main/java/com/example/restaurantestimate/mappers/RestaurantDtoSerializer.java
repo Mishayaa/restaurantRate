@@ -23,7 +23,6 @@ public class RestaurantDtoSerializer implements Function<Restaurant, RestaurantD
     public RestaurantDto apply(Restaurant restaurant) {
         return RestaurantDto.builder()
                 .id(restaurant.getId())
-                .description(restaurant.getDescription())
                 .posterUrl(restaurant.getPosterUrl())
                 .name(restaurant.getName())
                 .rating(restaurant.getRating())

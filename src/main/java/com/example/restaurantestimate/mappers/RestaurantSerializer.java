@@ -21,7 +21,7 @@ public class RestaurantSerializer implements Function<RestaurantDto, Restaurant>
 
                 .name(restaurantDto.getName())
                 .rating(restaurantDto.getRating())
-                .posterUrl(restaurantDto.getPhoto())
+                .posterUrl(restaurantDto.getPosterUrl())
                 .formatted_address(restaurantDto.getFormatted_address())
                 .open_now(restaurantDto.getOpenNow()).build();
 

@@ -139,7 +139,7 @@ public class RestaurantController {
             )
     })
     @GetMapping(RESTAURANT_CONTROLLER_PATH + "/search")
-    public ResponseEntity<RestaurantPages> searchRestaurant(
+    public ResponseEntity<PageDto> searchRestaurant(
             @RequestParam String name,
             @RequestParam(required = false, defaultValue = "1") Integer page,
             @RequestParam(required = false, defaultValue = "10") Integer limit) {

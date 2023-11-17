@@ -22,13 +22,10 @@ public class RestaurantMapper {
         ReviewDto reviewByUser = reviewService.getReviewByUserIdAndMovieId(userId, restaurant.getId());
         return UserRestaurant.builder()
                 .id(restaurant.getId())
-                .description(restaurant.getDescription())
                 .posterUrl(restaurant.getPosterUrl())
                 .name(restaurant.getName())
                 .averageRating(reviewService.getAverageReviewRatingById(restaurant.getId()))
-                .cuisines(restaurant.getCuisines().stream()
-                        .map(e -> new CuisineDto(e.getName()))
-                        .collect(Collectors.toSet()))
+
                 .review(reviewByUser.getReview())
                 .rating(reviewByUser.getRating())
                 .build();
@@ -37,13 +34,9 @@ public class RestaurantMapper {
     public RestaurantCard toRestaurantCard(Restaurant restaurant, Long userId) {
         return RestaurantCard.builder()
                 .id(restaurant.getId())
-                .description(restaurant.getDescription())
                 .posterUrl(restaurant.getPosterUrl())
                 .name(restaurant.getName())
                 .averageRating(reviewService.getAverageReviewRatingById(restaurant.getId()))
-                .cuisines(restaurant.getCuisines().stream()
-                        .map(e -> new CuisineDto(e.getName()))
-                        .collect(Collectors.toSet()))
 
                 .isFavorite(userService.isFavoriteMovieForCurrentUser(userId, restaurant.getId()))
                 .build();

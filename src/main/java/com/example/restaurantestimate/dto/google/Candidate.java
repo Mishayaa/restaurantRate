@@ -18,17 +18,12 @@ import java.util.Set;
 @NoArgsConstructor
 public class Candidate {
     private String name;
-    private String description;
     private String formatted_address;
     private Double rating;
     private OpeningHours opening_hours;
     private Geometry geometry;
     private Boolean openNow;
-    private String cuisines;
-    private String primaryType;
     private List<RestaurantReview> reviews;
-    private Photo photo;
     private String placeId;
     private String photoUrl;
-    private String address;
 }

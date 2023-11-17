@@ -15,6 +15,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.List;
@@ -29,7 +30,7 @@ public class GoogleRestaurantService {
     private final RestaurantCustomRepositoryImpl restaurantCustomRepository;
     private final PageMapper pageMapper;
 
-
+    @Transactional
     public RestaurantPages getRestaurantByName(String name, Integer page, Integer limit) {
 
         PageRequest pageRequest = PageRequest.of(page - 1, limit);
@@ -64,8 +65,6 @@ public class GoogleRestaurantService {
         return pageMapper.buildRestaurantPage(limit, page, restaurantPage);
 
     }
-
-
 
 
 }

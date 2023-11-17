@@ -107,9 +107,6 @@ public class GoogleExternalApiService {
         Candidate restaurant = new Candidate();
         restaurant.setPlaceId(placeId);
         restaurant.setName(name);
-        restaurant.setDescription(description);
-        restaurant.setCuisines(cuisines.toString());
-        restaurant.setAddress(address);
         restaurant.setPhotoUrl(photoUrl);
 
         return restaurant;
