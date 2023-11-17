@@ -1,6 +1,5 @@
 package com.example.restaurantestimate.dto.user;
 
-import com.example.restaurantestimate.dto.CuisineDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,7 +18,6 @@ public class UserRestaurant {
     private String name;
     private String description;
     private Double averageRating;
-    private Set<CuisineDto> cuisines;
     private String posterUrl;
     private Double rating;
     private String review;

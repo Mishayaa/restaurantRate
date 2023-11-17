@@ -1,11 +1,9 @@
 package com.example.restaurantestimate.mappers;
 
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import com.example.restaurantestimate.dto.restaurant.RestaurantDto;
 import com.example.restaurantestimate.entities.Restaurant;
-import com.example.restaurantestimate.services.CuisineService;
 import com.example.restaurantestimate.services.ReviewService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

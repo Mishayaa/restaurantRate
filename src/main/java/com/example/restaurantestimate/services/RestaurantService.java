@@ -12,7 +12,6 @@ import com.example.restaurantestimate.mappers.RestaurantSerializer;
 import com.example.restaurantestimate.repositories.RestaurantCustomRepositoryImpl;
 import com.example.restaurantestimate.repositories.RestaurantRepository;
 import com.example.restaurantestimate.repositories.ReviewCustomRepositoryImpl;
-import com.example.restaurantestimate.repositories.filters.CuisineFilter;
 import com.example.restaurantestimate.repositories.filters.UserIdFilter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -140,13 +139,7 @@ public class RestaurantService {
         return pageMapper.buildRestaurantPageShort(limit, page, restaurantPage);
     }
 
-    @Transactional
-    public RestaurantPages getRestaurantsByCuisine(String cuisineName, Integer page, Integer limit) {
-        PageRequest pageRequest = PageRequest.of(page - 1, limit);
-        Page<Restaurant> restaurantPage = restaurantCustomRepository.findByCuisineNameFilter(new CuisineFilter(cuisineName), pageRequest);
 
-        return pageMapper.buildRestaurantPage(limit, page, restaurantPage);
-    }
 
     @Transactional
     public UserRestaurantPage getRestaurantsByUser(Long userId, Integer page, Integer limit) {

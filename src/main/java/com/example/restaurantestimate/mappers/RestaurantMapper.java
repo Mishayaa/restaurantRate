@@ -1,6 +1,5 @@
 package com.example.restaurantestimate.mappers;
 
-import com.example.restaurantestimate.dto.CuisineDto;
 import com.example.restaurantestimate.dto.restaurant.RestaurantCard;
 import com.example.restaurantestimate.dto.review.ReviewDto;
 import com.example.restaurantestimate.dto.user.UserRestaurant;
@@ -9,8 +8,6 @@ import com.example.restaurantestimate.services.ReviewService;
 import com.example.restaurantestimate.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-
-import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor

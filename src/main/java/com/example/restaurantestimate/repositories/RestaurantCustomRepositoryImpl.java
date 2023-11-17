@@ -5,7 +5,6 @@ import com.example.restaurantestimate.entities.QReview;
 import com.example.restaurantestimate.entities.QUser;
 import com.example.restaurantestimate.entities.Restaurant;
 
-import com.example.restaurantestimate.repositories.filters.CuisineFilter;
 import com.example.restaurantestimate.repositories.filters.UserIdFilter;
 import lombok.RequiredArgsConstructor;
 
@@ -66,19 +65,7 @@ public class RestaurantCustomRepositoryImpl {
                 );
     }
 
-    public PageImpl<Restaurant> findByCuisineNameFilter(CuisineFilter filter, Pageable pageable) {
-        JPAQuery<Restaurant> query = new JPAQuery<>(entityManager)
-                .select(restaurant)
-                .from(restaurant)
-                .where(restaurant.cuisines.any().name.toLowerCase().contains(filter.getCuisineName().toLowerCase()));
 
-        long total = query.fetchCount();
-        query.limit(pageable.getPageSize());
-        query.offset(pageable.getOffset());
-        List<Restaurant> restaurants = query.fetch();
-
-        return new PageImpl<>(restaurants, pageable, total);
-    }
 
     public PageImpl<Restaurant> findByUserIdFilter(UserIdFilter filter, Pageable pageable) {
         QUser user = QUser.user;
