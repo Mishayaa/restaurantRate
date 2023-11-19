@@ -23,6 +23,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.Optional;
 
 
 @Service
@@ -79,13 +80,27 @@ public class UserService implements UserDetailsService {
 
     public User getCurrentUser() {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        return userRepository.findByUsername(username)
-                .orElseThrow(() -> new EntityNotFoundException("User not found!"));
+        Optional<User> user = userRepository.findByUsername(username);
+        if (user.isPresent()) {
+            return user.get();
+        } else {
+            return null;
+        }
+
+    }
+
+    public Optional<User> getCurrentUserOptional() {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        return userRepository.findByUsername(username);
+
+
     }
 
     public void updateUser(User user) {
         userRepository.save(user);
     }
+
     @Transactional
     public UserDtoResponse updateAbout(Long userId, UserDtoAboutRequest aboutRequest) {
         User user = userRepository.findById(userId)

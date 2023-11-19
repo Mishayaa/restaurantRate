@@ -65,7 +65,8 @@ public class SecurityConfig {
                         }
                 ))
                 .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(request -> request.anyRequest().permitAll())
+                .authorizeHttpRequests(requests -> requests.requestMatchers(PUBLIC_URLS).permitAll())
+                .authorizeHttpRequests(request -> request.anyRequest().authenticated())
                 .addFilterBefore(
                         jwtAuthenticationFilter,
                         UsernamePasswordAuthenticationFilter.class

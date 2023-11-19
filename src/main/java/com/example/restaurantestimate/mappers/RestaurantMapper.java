@@ -38,4 +38,12 @@ public class RestaurantMapper {
                 .isFavorite(userService.isFavoriteMovieForCurrentUser(userId, restaurant.getId()))
                 .build();
     }
+    public RestaurantCard toRestaurantCard(Restaurant restaurant) {
+        return RestaurantCard.builder()
+                .id(restaurant.getId())
+                .posterUrl(restaurant.getPosterUrl())
+                .name(restaurant.getName())
+                .averageRating(reviewService.getAverageReviewRatingById(restaurant.getId()))
+                .build();
+    }
 }

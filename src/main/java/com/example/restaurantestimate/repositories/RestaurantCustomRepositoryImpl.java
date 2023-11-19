@@ -30,7 +30,7 @@ import static com.example.restaurantestimate.entities.QRestaurant.restaurant;
 
 @Component
 @RequiredArgsConstructor
-public class RestaurantCustomRepositoryImpl {
+public class    RestaurantCustomRepositoryImpl {
     private final EntityManager entityManager;
 
     public PageImpl<Restaurant> searchBy(String text, PageRequest pageRequest, String... fields) {

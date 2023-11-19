@@ -18,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpClientErrorException;
@@ -90,16 +91,22 @@ public class RestaurantService {
                 .timestamp(Instant.now().toString())
                 .build();
     }
-    @Transactional
 
+    @Transactional
     public RestaurantCard getRestaurantById(Long id) {
         User user = userService.getCurrentUser();
+
         Optional<Restaurant> restaurantInDb = restaurantRepository.findById(id);
 
         Restaurant restaurant = restaurantInDb.orElseThrow(() ->
                 new EntityNotFoundException(String.format("Restaurant with such ID: '%s' was not found!", id)));
+        if (user != null) {
+            return restaurantMapper.toRestaurantCard(restaurant, user.getId());
+        } else {
+            return restaurantMapper.toRestaurantCard(restaurant);
 
-        return restaurantMapper.toRestaurantCard(restaurant, user.getId());
+        }
+
     }
 
     @Transactional
@@ -138,7 +145,6 @@ public class RestaurantService {
         Page<Restaurant> restaurantPage = restaurantCustomRepository.searchBy(name, pageRequest, "name");
         return pageMapper.buildRestaurantPageShort(limit, page, restaurantPage);
     }
-
 
 
     @Transactional

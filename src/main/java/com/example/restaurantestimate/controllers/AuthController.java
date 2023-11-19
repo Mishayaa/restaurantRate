@@ -56,10 +56,10 @@ public class AuthController {
                     }
             )
     })
-    @PostMapping(AUTH_CONTROLLER_LOGIN_PATH)
-    public ResponseEntity<AuthTokenDtoResponse> login(@RequestBody UserDtoLoginRequest authLoginRequest) {
-        return ResponseEntity.ok(authenticationService.authenticate(authLoginRequest));
-    }
+        @PostMapping(AUTH_CONTROLLER_LOGIN_PATH)
+        public ResponseEntity<AuthTokenDtoResponse> login(@RequestBody UserDtoLoginRequest authLoginRequest) {
+            return ResponseEntity.ok(authenticationService.authenticate(authLoginRequest));
+        }
 
 
 

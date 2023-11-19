@@ -3,7 +3,6 @@ package com.example.restaurantestimate.controllers;
 import com.example.restaurantestimate.dto.PageDto;
 import com.example.restaurantestimate.dto.ResponseMessage;
 import com.example.restaurantestimate.dto.restaurant.*;
-import com.example.restaurantestimate.entities.Restaurant;
 import com.example.restaurantestimate.services.GoogleRestaurantService;
 import com.example.restaurantestimate.services.RestaurantService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -37,7 +36,6 @@ public class RestaurantController {
     private final GoogleRestaurantService googleRestaurantService;
     public static final String RESTAURANT_CONTROLLER_PATH = "/api/restaurant";
     public static final String RESTAURANT_CONTROLLER_PATH_USERS = "/api/restaurant/user";
-    public static final String RESTAURANT_CONTROLLER_PATH_CUISINE = "/api/restaurant/cuisine";
 
     @Operation(summary = "Get restaurant by ID from app db")
     @ApiResponses(value = {
