@@ -18,4 +18,10 @@ public class RestaurantCard {
     private Double averageRating;
     private String posterUrl;
     private Boolean isFavorite;
+    private boolean hasBeer;
+    private boolean hasWine;
+    private boolean hasSnacks;
+    private boolean hasCocktails;
+    private boolean hasTerrace;
+    private boolean hasTakeaway;
 }

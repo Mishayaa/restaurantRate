@@ -7,7 +7,11 @@ import com.example.restaurantestimate.dto.restaurant.RestaurantPages;
 import com.example.restaurantestimate.mappers.GooglePlacesApiSerializer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -16,6 +20,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.persistence.EntityNotFoundException;
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URI;
@@ -61,6 +66,8 @@ public class GoogleExternalApiService {
         for (Candidate foundRestaurant : foundRestaurants) {
             foundRestaurant.setPlaceId(getRestaurantFromGooglePlaces(getPlaceIdFromGooglePlaces(name)).getPlaceId());
             foundRestaurant.setPhotoUrl(getRestaurantFromGooglePlaces(foundRestaurant.getPlaceId()).getPhotoUrl());
+
+
             System.out.println(foundRestaurant.getName() + " - " + foundRestaurant.getFormatted_address());
         }
 
@@ -95,21 +102,41 @@ public class GoogleExternalApiService {
         String photoReference = result.getJSONArray("photos").getJSONObject(0).getString("photo_reference");
         String photoUrl = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=" + photoReference + "&key=" + apiKey;
         String description = result.has("description") ? result.getString("description") : "No description available";
-        JSONArray types = result.getJSONArray("types");
-        StringBuilder cuisines = new StringBuilder();
-        for (int i = 0; i < types.length(); i++) {
-            cuisines.append(types.getString(i));
-            if (i < types.length() - 1) {
-                cuisines.append(", ");
-            }
-        }
 
         Candidate restaurant = new Candidate();
-        restaurant.setPlaceId(placeId);
-        restaurant.setName(name);
-        restaurant.setPhotoUrl(photoUrl);
+        Request request = new Request.Builder()
+                .url(url)
+                .build();
+        OkHttpClient client = new OkHttpClient();
 
-        return restaurant;
+        try (Response response = client.newCall(request).execute()) {
+            if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
+
+            JSONObject responseObject = new JSONObject(response.body().string());
+            JSONObject res = responseObject.getJSONObject("result");
+
+            boolean hasTerrace = res.has("goodForGroups");
+            System.out.println(hasTerrace);
+            boolean hasWine = res.has("servesWine");
+            System.out.println(hasWine);
+
+            boolean hasBeer = res.has("servesBeer");
+            boolean hasSnacks = res.has("servesDessert");
+            boolean hasTakeaway = res.has("takeout");
+            boolean hasCocktails = res.has("servesCocktails");
+
+            restaurant.setServesBeer(hasBeer);
+            restaurant.setServesWine(hasWine);
+            restaurant.setHasSnacks(hasSnacks);
+            restaurant.setHasTakeaway(hasTakeaway);
+            restaurant.setHasTerrace(hasTerrace);
+            restaurant.setPlaceId(placeId);
+            restaurant.setHasCocktails(hasCocktails);
+            restaurant.setName(name);
+            restaurant.setPhotoUrl(photoUrl);
+
+            return restaurant;
+        }
     }
 
     public String getPlaceIdFromGooglePlaces(String restaurantName) throws Exception {

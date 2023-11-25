@@ -28,8 +28,12 @@ public class GooglePlacesApiSerializer implements Function<Candidate, Restaurant
                 .opening_hours(restaurant.getOpening_hours())
                 .geometry(restaurant.getGeometry())
                 .posterUrl(restaurant.getPhotoUrl())
-
-
+                .servesBeer(restaurant.isServesBeer())
+                .servesWine(restaurant.isServesWine())
+                .hasCocktails(restaurant.isHasCocktails())
+                .hasSnacks(restaurant.isHasSnacks())
+                .hasTakeaway(restaurant.isHasTakeaway())
+                .hasTerrace(restaurant.isHasTerrace())
 //                .cuisines(restaurant.getCuisines().stream()
 //                        .map(e -> new CuisineDto(e.getName()))
 //                        .collect(Collectors.toSet()))

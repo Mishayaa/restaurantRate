@@ -29,6 +29,12 @@ public class RestaurantDto {
     private String formatted_address;
     private OpeningHours opening_hours;
     private List<ReviewDto> reviews;
+    private boolean servesBeer;
+    private boolean servesWine;
+    private boolean hasSnacks;
+    private boolean hasCocktails;
+    private boolean hasTerrace;
+    private boolean hasTakeaway;
 
 
 }

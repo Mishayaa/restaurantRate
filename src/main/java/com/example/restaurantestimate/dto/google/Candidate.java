@@ -22,4 +22,10 @@ public class Candidate {
     private List<RestaurantReview> reviews;
     private String placeId;
     private String photoUrl;
+    private boolean servesBeer;
+    private boolean servesWine;
+    private boolean hasSnacks;
+    private boolean hasCocktails;
+    private boolean hasTerrace;
+    private boolean hasTakeaway;
 }

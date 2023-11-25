@@ -23,115 +23,115 @@ import org.springframework.web.bind.annotation.*;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
 
-@RestController
-@RequiredArgsConstructor
-public class    UserController {
-    private UserService userService;
+    @RestController
+    @RequiredArgsConstructor
+    public class UserController {
+        private UserService userService;
 
 
-    private AuthenticationService authenticationService;
-    public static final String USER_CONTROLLER_PATH = "/api/users";
+        private AuthenticationService authenticationService;
+        public static final String USER_CONTROLLER_PATH = "/api/users";
 
-    @Autowired
-    public void setAuthenticationService(AuthenticationService authenticationService) {
-        this.authenticationService = authenticationService;
+        @Autowired
+        public void setAuthenticationService(AuthenticationService authenticationService) {
+            this.authenticationService = authenticationService;
+        }
+
+        @Autowired
+        public void setUserService(UserService userService) {
+            this.userService = userService;
+        }
+
+
+        @Operation(summary = "Зарегистрировать нового пользователя", description = """
+                С помощью этого метода можно зарегистрировать нового пользователя.
+                """)
+        @ApiResponses(value = {
+                @ApiResponse(
+                        responseCode = "201",
+                        description = "Новый пользователь зарегистрирован",
+                        content = {
+                                @Content(
+                                        mediaType = "application/json",
+                                        schema = @Schema(implementation = UserDtoResponse.class)
+                                )
+                        }
+                ),
+                @ApiResponse(
+                        responseCode = "422",
+                        description = "Не удалось создать пользователя.",
+                        content = {
+                                @Content(
+                                        mediaType = "application/json",
+                                        schema = @Schema(implementation = ResponseMessage.class)
+                                )
+                        }
+                )
+        })
+        @PostMapping(value = USER_CONTROLLER_PATH)
+        public ResponseEntity<AuthTokenDtoResponse> createUser(@RequestBody UserRegistrationDtoRequest authRegistrationRequest) {
+            return new ResponseEntity<>(authenticationService.createUser(authRegistrationRequest), CREATED);
+        }
+
+        @Operation(summary = "Получить пользователя", description = """
+                Эндпоинт для получения информации о пользователе.
+                """)
+        @ApiResponses(value = {
+                @ApiResponse(
+                        responseCode = "200",
+                        description = "Существующий пользователь",
+                        content = {
+                                @Content(
+                                        mediaType = "application/json",
+                                        schema = @Schema(implementation = UserDtoResponse.class)
+                                )
+                        }
+                ),
+                @ApiResponse(
+                        responseCode = "422",
+                        description = "Пользователь не найден.",
+                        content = {
+                                @Content(
+                                        mediaType = "application/json",
+                                        schema = @Schema(implementation = ResponseMessage.class)
+                                )
+                        }
+                )
+        })
+        @GetMapping(value = USER_CONTROLLER_PATH + "/{userId}")
+        public ResponseEntity<UserDtoResponse> getUser(@PathVariable(value = "userId") Long userId) {
+            UserDtoResponse user = userService.getUserById(userId);
+            return new ResponseEntity<>(user, OK);
+        }
+        @Operation(summary = "Обновить описание пользователя.", description = """
+                Эндпоинт предназначен для обновление поля about в сущности пользователя.
+                """)
+        @ApiResponses(value = {
+                @ApiResponse(
+                        responseCode = "200",
+                        description = "Обновленная информация о пользователе.",
+                        content = {
+                                @Content(
+                                        mediaType = "application/json",
+                                        schema = @Schema(implementation = UserDtoResponse.class)
+                                )
+                        }
+                ),
+                @ApiResponse(
+                        responseCode = "422",
+                        description = "Не удалось обновить информацию о пользователе.",
+                        content = {
+                                @Content(
+                                        mediaType = "application/json",
+                                        schema = @Schema(implementation = ResponseMessage.class)
+                                )
+                        }
+                )
+        })
+        @PutMapping(value = USER_CONTROLLER_PATH + "/{userId}")
+        public ResponseEntity<UserDtoResponse> updateAbout(@PathVariable(value = "userId")
+                                                           @Parameter(description = "ID пользователя", example = "1") Long userId,
+                                                           @RequestBody UserDtoAboutRequest aboutRequest) {
+            return new ResponseEntity<>(userService.updateAbout(userId, aboutRequest), OK);
+        }
     }
-
-    @Autowired
-    public void setUserService(UserService userService) {
-        this.userService = userService;
-    }
-
-
-    @Operation(summary = "Зарегистрировать нового пользователя", description = """
-            С помощью этого метода можно зарегистрировать нового пользователя.
-            """)
-    @ApiResponses(value = {
-            @ApiResponse(
-                    responseCode = "201",
-                    description = "Новый пользователь зарегистрирован",
-                    content = {
-                            @Content(
-                                    mediaType = "application/json",
-                                    schema = @Schema(implementation = UserDtoResponse.class)
-                            )
-                    }
-            ),
-            @ApiResponse(
-                    responseCode = "422",
-                    description = "Не удалось создать пользователя.",
-                    content = {
-                            @Content(
-                                    mediaType = "application/json",
-                                    schema = @Schema(implementation = ResponseMessage.class)
-                            )
-                    }
-            )
-    })
-    @PostMapping(value = USER_CONTROLLER_PATH)
-    public ResponseEntity<AuthTokenDtoResponse> createUser(@RequestBody UserRegistrationDtoRequest authRegistrationRequest) {
-        return new ResponseEntity<>(authenticationService.createUser(authRegistrationRequest), CREATED);
-    }
-
-    @Operation(summary = "Получить пользователя", description = """
-            Эндпоинт для получения информации о пользователе.
-            """)
-    @ApiResponses(value = {
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "Существующий пользователь",
-                    content = {
-                            @Content(
-                                    mediaType = "application/json",
-                                    schema = @Schema(implementation = UserDtoResponse.class)
-                            )
-                    }
-            ),
-            @ApiResponse(
-                    responseCode = "422",
-                    description = "Пользователь не найден.",
-                    content = {
-                            @Content(
-                                    mediaType = "application/json",
-                                    schema = @Schema(implementation = ResponseMessage.class)
-                            )
-                    }
-            )
-    })
-    @GetMapping(value = USER_CONTROLLER_PATH + "/{userId}")
-    public ResponseEntity<UserDtoResponse> getUser(@PathVariable(value = "userId") Long userId) {
-        UserDtoResponse user = userService.getUserById(userId);
-        return new ResponseEntity<>(user, OK);
-    }
-    @Operation(summary = "Обновить описание пользователя.", description = """
-            Эндпоинт предназначен для обновление поля about в сущности пользователя.
-            """)
-    @ApiResponses(value = {
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "Обновленная информация о пользователе.",
-                    content = {
-                            @Content(
-                                    mediaType = "application/json",
-                                    schema = @Schema(implementation = UserDtoResponse.class)
-                            )
-                    }
-            ),
-            @ApiResponse(
-                    responseCode = "422",
-                    description = "Не удалось обновить информацию о пользователе.",
-                    content = {
-                            @Content(
-                                    mediaType = "application/json",
-                                    schema = @Schema(implementation = ResponseMessage.class)
-                            )
-                    }
-            )
-    })
-    @PutMapping(value = USER_CONTROLLER_PATH + "/{userId}")
-    public ResponseEntity<UserDtoResponse> updateAbout(@PathVariable(value = "userId")
-                                                       @Parameter(description = "ID пользователя", example = "1") Long userId,
-                                                       @RequestBody UserDtoAboutRequest aboutRequest) {
-        return new ResponseEntity<>(userService.updateAbout(userId, aboutRequest), OK);
-    }
-}

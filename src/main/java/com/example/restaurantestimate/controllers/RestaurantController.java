@@ -167,12 +167,12 @@ public class RestaurantController {
                     }
             )
     })
-    @PostMapping(value = RESTAURANT_CONTROLLER_PATH + "/favorites")
-    public ResponseEntity<RestaurantCard> addToFavorite(@RequestParam
-                                                        @Parameter(description = "ID restorana", example = "1") Long restaurantId) {
-        RestaurantCard restaurantCard = restaurantService.addToFavorite(restaurantId);
-        return new ResponseEntity<>(restaurantCard, OK);
-    }
+        @PostMapping(value = RESTAURANT_CONTROLLER_PATH + "/favorites")
+        public ResponseEntity<RestaurantCard> addToFavorite(@RequestParam
+                                                            @Parameter(description = "ID restorana", example = "1") Long restaurantId) {
+            RestaurantCard restaurantCard = restaurantService.addToFavorite(restaurantId);
+            return new ResponseEntity<>(restaurantCard, OK);
+        }
 
     @Operation(summary = "Get list of favourite movies")
     @ApiResponses(value = {

@@ -45,4 +45,10 @@ public class Restaurant {
     private String posterUrl;
     private String formatted_address;
     private Boolean open_now;
+    private boolean servesBeer;
+    private boolean servesWine;
+    private boolean hasSnacks;
+    private boolean hasCocktails;
+    private boolean hasTerrace;
+    private boolean hasTakeaway;
 }

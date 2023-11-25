@@ -23,6 +23,12 @@ public class RestaurantDtoSerializer implements Function<Restaurant, RestaurantD
                 .posterUrl(restaurant.getPosterUrl())
                 .name(restaurant.getName())
                 .rating(restaurant.getRating())
+                .servesBeer(restaurant.isServesBeer())
+                .servesWine(restaurant.isServesWine())
+                .hasCocktails(restaurant.isHasCocktails())
+                .hasSnacks(restaurant.isHasSnacks())
+                .hasTakeaway(restaurant.isHasTakeaway())
+                .hasTerrace(restaurant.isHasTerrace())
                 .reviews(
                         reviewService.getRandomReviewsByRestaurantName(restaurant.getName()).stream()
                                 .map(e -> new ReviewDto(
