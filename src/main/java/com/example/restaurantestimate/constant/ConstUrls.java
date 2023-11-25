@@ -25,6 +25,7 @@ public class ConstUrls {
             new AntPathRequestMatcher(RESTAURANT_CONTROLLER_PATH+"/popular",GET.toString()),
             new AntPathRequestMatcher(RESTAURANT_CONTROLLER_PATH+"/favorites",GET.toString()),
             new AntPathRequestMatcher(RESTAURANT_CONTROLLER_PATH+"/*"),
+            new AntPathRequestMatcher("/**",GET.toString()),
             new AntPathRequestMatcher("/api/auth/login/home"),
             new AntPathRequestMatcher("/h2/**"),
             new AntPathRequestMatcher("/swagger-ui/**"),
