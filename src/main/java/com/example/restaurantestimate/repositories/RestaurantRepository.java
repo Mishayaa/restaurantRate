@@ -13,10 +13,17 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+
 @Repository
 public interface RestaurantRepository extends CrudRepository<Restaurant, Long>, QuerydslPredicateExecutor<Restaurant> {
     Optional<Restaurant> findById(Long id);
+
+    Optional<List<Restaurant>> findAllByName(String name);
+    Optional<List<Restaurant>> findAllByPlaceId(String placeID);
+
     Optional<Restaurant> findByName(String name);
+    Optional<Restaurant> findByPlaceId(String placeId);
+
     List<Restaurant> findAll();
 
 }

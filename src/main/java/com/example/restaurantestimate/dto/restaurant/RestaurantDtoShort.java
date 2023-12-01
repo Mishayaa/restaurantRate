@@ -15,6 +15,7 @@ import lombok.Setter;
 public class RestaurantDtoShort {
     private String name;
     private Long id;
+    private String placeId;
     private String posterUrl;
 
 }

@@ -62,8 +62,8 @@ public class RestaurantController {
     })
     @GetMapping(value = RESTAURANT_CONTROLLER_PATH + "/{restaurantId}")
     public ResponseEntity<RestaurantCard> getRestaurantById(@PathVariable("restaurantId")
-                                                            @Parameter(description = "restaurant ID", example = "1") Long restaurantId
-    ) {
+                                                            @Parameter(description = "restaurantId ID", example = "1") Long restaurantId
+    ) throws Exception {
         RestaurantCard restaurant = restaurantService.getRestaurantById(restaurantId);
         return new ResponseEntity<>(restaurant, OK);
     }
@@ -140,8 +140,20 @@ public class RestaurantController {
     public ResponseEntity<PageDto> searchRestaurant(
             @RequestParam String name,
             @RequestParam(required = false, defaultValue = "1") Integer page,
-            @RequestParam(required = false, defaultValue = "10") Integer limit) {
-        return new ResponseEntity<>(googleRestaurantService.getRestaurantByName(name, page, limit), OK);
+            @RequestParam(required = false, defaultValue = "100") Integer limit,
+            @RequestParam(required = false, value = "expanded", defaultValue = "true")
+            @Parameter(description = "Предоставить полную информацию о фильмах."
+                    + "true - вернуть полную информацию о фильмах, "
+                    + "false - только то что нужно для выпадающего поиска.") Boolean expanded,
+            @RequestParam(required = false, value = "findKp", defaultValue = "false")
+            @Parameter(description = "Поиск по кинопоиску. true - искать на кинопоиске, "
+                    + "false - в базе приложения.") Boolean findKp) {
+        if (Boolean.TRUE.equals(expanded)) {
+            return new ResponseEntity<>(googleRestaurantService.getMoviesByName(name, findKp, page, limit), OK);
+        } else {
+            return new ResponseEntity<>(restaurantService.getMoviesByNameShortInfo(name, findKp, page, limit), OK);
+
+        }
     }
 
     @Operation(summary = "Add movie to favourites")
@@ -167,14 +179,14 @@ public class RestaurantController {
                     }
             )
     })
-        @PostMapping(value = RESTAURANT_CONTROLLER_PATH + "/favorites")
-        public ResponseEntity<RestaurantCard> addToFavorite(@RequestParam
-                                                            @Parameter(description = "ID restorana", example = "1") Long restaurantId) {
-            RestaurantCard restaurantCard = restaurantService.addToFavorite(restaurantId);
-            return new ResponseEntity<>(restaurantCard, OK);
-        }
+    @PostMapping(value = RESTAURANT_CONTROLLER_PATH + "/favorites")
+    public ResponseEntity<RestaurantCard> addToFavorite(@RequestParam
+                                                        @Parameter(description = "ID restorana", example = "1") Long restaurantId) {
+        RestaurantCard restaurantCard = restaurantService.addToFavorite(restaurantId);
+        return new ResponseEntity<>(restaurantCard, OK);
+    }
 
-    @Operation(summary = "Get list of favourite movies")
+    @Operation(summary = "Get list of favourite restaurants")
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "200",

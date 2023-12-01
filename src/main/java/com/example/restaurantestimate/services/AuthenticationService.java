@@ -111,7 +111,6 @@ public class AuthenticationService {
         User user = new User();
         user.setEmail(authRegistrationRequest.getEmail());
         user.setUsername(authRegistrationRequest.getUsername());
-        user.setName(authRegistrationRequest.getName());
         user.setPassword(encoderConfig.passwordEncoder().encode(authRegistrationRequest.getPassword()));
         user.setRoles(List.of(roleService.getUserRole()));
         userRepository.save(user);

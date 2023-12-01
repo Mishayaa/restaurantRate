@@ -1,10 +1,12 @@
 package com.example.restaurantestimate.services;
 
 import com.example.restaurantestimate.dto.ResponseMessage;
+import com.example.restaurantestimate.dto.google.Candidate;
 import com.example.restaurantestimate.dto.restaurant.*;
 import com.example.restaurantestimate.dto.user.UserRestaurant;
 import com.example.restaurantestimate.entities.Restaurant;
 import com.example.restaurantestimate.entities.User;
+import com.example.restaurantestimate.mappers.GooglePlacesApiSerializer;
 import com.example.restaurantestimate.mappers.PageMapper;
 import com.example.restaurantestimate.mappers.RestaurantMapper;
 import com.example.restaurantestimate.mappers.RestaurantSerializer;
@@ -41,6 +43,8 @@ public class RestaurantService {
     private final RestaurantRepository restaurantRepository;
     private final RestaurantCustomRepositoryImpl restaurantCustomRepository;
     private final RestaurantSerializer restaurantSerializer;
+    private final GooglePlacesApiSerializer googlePlacesApiSerializer;
+
     private final GoogleExternalApiService googleExternalApiService;
     private final RestaurantMapper restaurantMapper;
     private final PageMapper pageMapper;
@@ -95,15 +99,32 @@ public class RestaurantService {
     @Transactional
     public RestaurantCard getRestaurantById(Long id) {
         User user = userService.getCurrentUser();
-
+        System.out.println("I am used");
         Optional<Restaurant> restaurantInDb = restaurantRepository.findById(id);
-
         Restaurant restaurant = restaurantInDb.orElseThrow(() ->
                 new EntityNotFoundException(String.format("Restaurant with such ID: '%s' was not found!", id)));
         if (user != null) {
             return restaurantMapper.toRestaurantCard(restaurant, user.getId());
         } else {
             return restaurantMapper.toRestaurantCard(restaurant);
+
+        }
+
+    }
+
+    @Transactional
+    public RestaurantCard getRestaurantByPlaceId(String id) throws Exception {
+        User user = userService.getCurrentUser();
+        Optional<Restaurant> restaurantInDb = restaurantRepository.findByPlaceId(id);
+//        if (restaurantInDb.isEmpty()) {
+//            Restaurant restaurant = restaurantSerializer.apply(googlePlacesApiSerializer.apply(googleExternalApiService.getRestaurantFromGooglePlaces(id)));
+//            restaurantInDb = Optional.of(restaurant);
+//        }
+
+        if (user != null) {
+            return restaurantMapper.toRestaurantCard(restaurantInDb.get(), user.getId());
+        } else {
+            return restaurantMapper.toRestaurantCard(restaurantInDb.get());
 
         }
 
@@ -139,13 +160,35 @@ public class RestaurantService {
     }
 
     @Transactional
-    public RestaurantPagesShort getRestaurantByNameShortInfo(String name, Boolean findOnTrip, Integer page, Integer limit) {
+    public RestaurantPagesShort getRestaurantByNameShortInfo(String name, Integer page, Integer limit) {
 
         PageRequest pageRequest = PageRequest.of(page - 1, limit);
         Page<Restaurant> restaurantPage = restaurantCustomRepository.searchBy(name, pageRequest, "name");
         return pageMapper.buildRestaurantPageShort(limit, page, restaurantPage);
     }
 
+    @Transactional
+    public RestaurantPagesShort getMoviesByNameShortInfo(String name, Boolean findOnKp, Integer page, Integer limit) {
+
+        if (Boolean.TRUE.equals(findOnKp)) {
+            RestaurantPages kpMovies = null;
+            try {
+                kpMovies = googleExternalApiService.test2(name);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+
+            List<Restaurant> movies = kpMovies.getRestaurants().stream()
+                    .filter(e -> restaurantRepository.findByPlaceId(e.getPlaceID()).isEmpty())
+                    .map(restaurantSerializer)
+                    .toList();
+            restaurantRepository.saveAll(movies);
+            return pageMapper.buildMoviePageShortFromKp(limit, page, kpMovies, movies);
+        }
+        PageRequest pageRequest = PageRequest.of(page - 1, limit);
+        Page<Restaurant> moviePage = restaurantCustomRepository.searchBy(name, pageRequest, "name");
+        return pageMapper.buildRestaurantPageShort(limit, page, moviePage);
+    }
 
     @Transactional
     public UserRestaurantPage getRestaurantsByUser(Long userId, Integer page, Integer limit) {

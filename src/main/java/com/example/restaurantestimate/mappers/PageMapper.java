@@ -31,20 +31,20 @@ public class PageMapper {
         return restaurantPages;
     }
 
-//    public RestaurantPagesShort buildRestaurantPageShortFromTripAdv(Integer limit, Integer page,
-//                                                               RestaurantPages restaurantPage, List<Restaurant> restaurants) {
-//        List<RestaurantDtoShort> restaurantDtoShorts = restaurants.stream()
-//                .map(restaurantDtoShortSerializer)
-//                .toList();
-//
-//        RestaurantPagesShort restaurantPagesShort = new RestaurantPagesShort(restaurantDtoShorts);
-//        restaurantPagesShort.setPage(page);
-//        restaurantPagesShort.setPages(restaurantPage.getPages());
-//        restaurantPagesShort.setTotal(restaurantPage.getTotal());
-//        restaurantPagesShort.setLimit(limit);
-//
-//        return restaurantPagesShort;
-//    }
+   public RestaurantPagesShort buildMoviePageShortFromKp(Integer limit, Integer page,
+                                                     RestaurantPages moviePage, List<Restaurant> movies) {
+        List<RestaurantDtoShort> movieDtoShorts = movies.stream()
+                .map(restaurantDtoShortSerializer)
+                .toList();
+
+       RestaurantPagesShort moviePagesShort = new RestaurantPagesShort(movieDtoShorts);
+        moviePagesShort.setPage(page);
+        moviePagesShort.setPages(moviePage.getPages());
+        moviePagesShort.setTotal(moviePage.getTotal());
+        moviePagesShort.setLimit(limit);
+
+        return moviePagesShort;
+    }
 
     public RestaurantPagesShort buildRestaurantPageShort(Integer limit, Integer page, Page<Restaurant> restaurantPage) {
         List<RestaurantDtoShort> restaurants = restaurantPage.getContent().stream()

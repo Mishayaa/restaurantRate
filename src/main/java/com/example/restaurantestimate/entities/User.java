@@ -33,10 +33,6 @@ public class User {
     @NotBlank(message = "Введите логин пользователя чтобы зарегистрироваться")
     private String username;
 
-    @Column(name = "name", unique = true, nullable = false)
-    @NotBlank(message = "Введите имя пользователя чтобы зарегистрироваться")
-    private String name;
-
     @Column(name = "password", nullable = false)
     @NotBlank(message = "Введите пароль чтобы зарегистрироваться")
     private String password;

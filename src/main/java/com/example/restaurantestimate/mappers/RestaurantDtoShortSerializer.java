@@ -17,6 +17,7 @@ public class RestaurantDtoShortSerializer implements Function<Restaurant, Restau
         return RestaurantDtoShort.builder()
                 .id(restaurant.getId())
                 .name(restaurant.getName())
+                .placeId(restaurant.getPlaceId())
                 .posterUrl(restaurant.getPosterUrl())
                 .build();
     }

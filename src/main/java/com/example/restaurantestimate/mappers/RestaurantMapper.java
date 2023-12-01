@@ -22,9 +22,10 @@ public class RestaurantMapper {
                 .posterUrl(restaurant.getPosterUrl())
                 .name(restaurant.getName())
                 .averageRating(reviewService.getAverageReviewRatingById(restaurant.getId()))
-
+                .formatted_address(restaurant.getFormatted_address())
                 .review(reviewByUser.getReview())
                 .rating(reviewByUser.getRating())
+
                 .build();
     }
 
@@ -33,6 +34,8 @@ public class RestaurantMapper {
                 .id(restaurant.getId())
                 .posterUrl(restaurant.getPosterUrl())
                 .name(restaurant.getName())
+                .hasBeer(restaurant.isServesBeer())
+                .formatted_address(restaurant.getFormatted_address())
                 .averageRating(reviewService.getAverageReviewRatingById(restaurant.getId()))
 
                 .isFavorite(userService.isFavoriteMovieForCurrentUser(userId, restaurant.getId()))
@@ -43,6 +46,8 @@ public class RestaurantMapper {
                 .id(restaurant.getId())
                 .posterUrl(restaurant.getPosterUrl())
                 .name(restaurant.getName())
+                .hasBeer(restaurant.isServesBeer())
+                .formatted_address(restaurant.getFormatted_address())
                 .averageRating(reviewService.getAverageReviewRatingById(restaurant.getId()))
                 .build();
     }

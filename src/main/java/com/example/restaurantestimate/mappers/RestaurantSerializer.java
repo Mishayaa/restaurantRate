@@ -23,11 +23,8 @@ public class RestaurantSerializer implements Function<RestaurantDto, Restaurant>
                 .formatted_address(restaurantDto.getFormatted_address())
                 .open_now(restaurantDto.getOpenNow())
                 .servesBeer(restaurantDto.isServesBeer())
-                .servesWine(restaurantDto.isServesWine())
-                .hasCocktails(restaurantDto.isHasCocktails())
-                .hasSnacks(restaurantDto.isHasSnacks())
-                .hasTakeaway(restaurantDto.isHasTakeaway())
-                .hasTerrace(restaurantDto.isHasTerrace()).build();
+                .placeId(restaurantDto.getPlaceID())
+                .build();
 
     }
 }

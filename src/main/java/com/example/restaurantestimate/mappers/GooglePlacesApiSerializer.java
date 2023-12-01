@@ -21,6 +21,7 @@ public class GooglePlacesApiSerializer implements Function<Candidate, Restaurant
     @Override
     public RestaurantDto apply(Candidate restaurant) {
         return RestaurantDto.builder()
+                .id(restaurant.getId())
                 .placeID(restaurant.getPlaceId())
                 .name(restaurant.getName())
                 .formatted_address(restaurant.getFormatted_address())
@@ -30,10 +31,7 @@ public class GooglePlacesApiSerializer implements Function<Candidate, Restaurant
                 .posterUrl(restaurant.getPhotoUrl())
                 .servesBeer(restaurant.isServesBeer())
                 .servesWine(restaurant.isServesWine())
-                .hasCocktails(restaurant.isHasCocktails())
-                .hasSnacks(restaurant.isHasSnacks())
-                .hasTakeaway(restaurant.isHasTakeaway())
-                .hasTerrace(restaurant.isHasTerrace())
+
 //                .cuisines(restaurant.getCuisines().stream()
 //                        .map(e -> new CuisineDto(e.getName()))
 //                        .collect(Collectors.toSet()))

@@ -16,7 +16,7 @@ import java.util.Set;
 public class UserRestaurant {
     private Long id;
     private String name;
-    private String description;
+    private String formatted_address;
     private Double averageRating;
     private String posterUrl;
     private Double rating;
