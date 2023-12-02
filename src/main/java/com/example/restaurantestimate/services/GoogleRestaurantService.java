@@ -108,6 +108,7 @@ public class GoogleRestaurantService {
                     .toList();
 
             restaurantRepository.saveAll(movies);
+            System.out.println("found");
             return kpMovies;
         }
         System.out.println("Finished");

@@ -180,7 +180,7 @@ public class GoogleExternalApiService {
 
     public RestaurantPages test2(String name) throws Exception {
         List<Candidate> restaurants = new ArrayList<>();
-        String urlString = "https://maps.googleapis.com/maps/api/place/textsearch/json?query=" + name.replace(" ","") + "restaurant"+"&key=" + apiKey;
+        String urlString = "https://maps.googleapis.com/maps/api/place/textsearch/json?query=" + name.replace(" ", "") + "restaurant" + "&key=" + apiKey;
 
         URL url = new URL(urlString);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
