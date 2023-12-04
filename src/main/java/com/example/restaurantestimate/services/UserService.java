@@ -110,13 +110,6 @@ public class UserService implements UserDetailsService {
         }
         throw new UploadAvatarException("Файл пустой!");
     }
-    public Optional<User> getCurrentUserOptional() {
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-
-        return userRepository.findByUsername(username);
-
-
-    }
 
     public void updateUser(User user) {
         userRepository.save(user);
