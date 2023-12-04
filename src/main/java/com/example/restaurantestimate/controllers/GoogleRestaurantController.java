@@ -20,7 +20,7 @@ public class GoogleRestaurantController {
     private final GoogleExternalApiService restaurantService;
     private final RestaurantService restaurantService2;
 
-    @GetMapping("/sear ch")
+    @GetMapping("/search")
     public RestaurantPages searchRestaurant(
             @RequestParam String name
     ) throws Exception {

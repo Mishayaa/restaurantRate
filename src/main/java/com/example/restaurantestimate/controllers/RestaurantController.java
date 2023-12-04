@@ -141,7 +141,7 @@ public class RestaurantController {
             @RequestParam String name,
             @RequestParam(required = false, defaultValue = "1") Integer page,
             @RequestParam(required = false, defaultValue = "100") Integer limit,
-            @RequestParam(required = false, value = "expanded", defaultValue = "true")
+            @RequestParam(required = false, value = "expanded", defaultValue = "false")
             @Parameter(description = "Предоставить полную информацию о фильмах."
                     + "true - вернуть полную информацию о фильмах, "
                     + "false - только то что нужно для выпадающего поиска.") Boolean expanded,
