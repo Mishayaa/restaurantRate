@@ -3,6 +3,7 @@ package com.example.restaurantestimate.services;
 import com.example.restaurantestimate.dto.ResponseMessage;
 import com.example.restaurantestimate.dto.ReviewDtoRequest;
 import com.example.restaurantestimate.dto.ReviewDtoUpdateRequest;
+import com.example.restaurantestimate.dto.restaurant.RestaurantCard;
 import com.example.restaurantestimate.dto.review.ReviewDto;
 import com.example.restaurantestimate.dto.review.ReviewPages;
 import com.example.restaurantestimate.entities.Restaurant;
@@ -10,9 +11,11 @@ import com.example.restaurantestimate.entities.Review;
 import com.example.restaurantestimate.entities.User;
 import com.example.restaurantestimate.exceptions.CustomAccessDeniedException;
 import com.example.restaurantestimate.exceptions.EntityAlreadyExistException;
+import com.example.restaurantestimate.mappers.RestaurantMapper;
 import com.example.restaurantestimate.mappers.ReviewSerializer;
 import com.example.restaurantestimate.repositories.RestaurantRepository;
 import com.example.restaurantestimate.repositories.ReviewRepository;
+import com.example.restaurantestimate.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -35,12 +38,25 @@ import java.util.Optional;
 public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final UserService userService;
+    private final UserRepository userRepository;
+
     private final RestaurantRepository restaurantRepository;
     private final ReviewSerializer reviewSerializer;
 
+    public User findUser() {
+        return userService.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+
+    }
+    public User getCurrentUser() {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        System.out.println(username);
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new EntityNotFoundException("Пользователь не найден!"));
+    }
     @Transactional
     public ReviewDto createReview(ReviewDtoRequest reviewDtoRequest) {
         User user = userService.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        System.out.println(user.getUsername());
         if (reviewRepository.findAllByUserIdAndRestaurantId(user.getId(), reviewDtoRequest.getRestaurantId()).isPresent()) {
             throw new EntityAlreadyExistException("Review on this restaurant is already created");
         }
@@ -61,7 +77,6 @@ public class ReviewService {
 
         return reviewSerializer.apply(review);
     }
-
     @Transactional
     public ReviewPages getAllReviews(Integer page, Integer limit) {
         PageRequest pageRequest = PageRequest.of(page - 1, limit);
@@ -185,7 +200,6 @@ public class ReviewService {
                 .map(reviewSerializer)
                 .toList();
     }
-
 
 
 }

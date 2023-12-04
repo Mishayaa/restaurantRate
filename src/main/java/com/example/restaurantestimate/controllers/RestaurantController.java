@@ -5,6 +5,7 @@ import com.example.restaurantestimate.dto.ResponseMessage;
 import com.example.restaurantestimate.dto.restaurant.*;
 import com.example.restaurantestimate.services.GoogleRestaurantService;
 import com.example.restaurantestimate.services.RestaurantService;
+import com.example.restaurantestimate.services.ReviewService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -31,7 +32,6 @@ import static org.springframework.http.HttpStatus.OK;
 @RestController
 @RequiredArgsConstructor
 public class RestaurantController {
-
     private final RestaurantService restaurantService;
     private final GoogleRestaurantService googleRestaurantService;
     public static final String RESTAURANT_CONTROLLER_PATH = "/api/restaurant";
@@ -181,7 +181,7 @@ public class RestaurantController {
     })
     @PostMapping(value = RESTAURANT_CONTROLLER_PATH + "/favorites")
     public ResponseEntity<RestaurantCard> addToFavorite(@RequestParam
-                                                        @Parameter(description = "ID restorana", example = "1") Long restaurantId) {
+                                                        @Parameter(description = "restaurant ID", example = "1") Long restaurantId) {
         RestaurantCard restaurantCard = restaurantService.addToFavorite(restaurantId);
         return new ResponseEntity<>(restaurantCard, OK);
     }

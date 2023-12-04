@@ -8,6 +8,7 @@ import static com.example.restaurantestimate.controllers.AuthController.AUTH_CON
 import static com.example.restaurantestimate.controllers.AuthController.AUTH_CONTROLLER_REFRESH_TOKEN_PATH;
 //import static com.example.restaurantestimate.controllers.RestaurantController.RESTAURANT_CONTROLLER_PATH;
 //import static com.example.restaurantestimate.controllers.RestaurantController.RESTAURANT_CONTROLLER_PATH_USERS;
+import static com.example.restaurantestimate.controllers.ImageController.IMAGE_CONTROLLER_PATH;
 import static com.example.restaurantestimate.controllers.RestaurantController.RESTAURANT_CONTROLLER_PATH;
 import static com.example.restaurantestimate.controllers.RestaurantController.RESTAURANT_CONTROLLER_PATH_USERS;
 import static com.example.restaurantestimate.controllers.UserController.USER_CONTROLLER_PATH;
@@ -22,6 +23,8 @@ public class ConstUrls {
             new AntPathRequestMatcher(USER_CONTROLLER_PATH, POST.toString()),
             new AntPathRequestMatcher(RESTAURANT_CONTROLLER_PATH+"/restaurantsNames",GET.toString()),
             new AntPathRequestMatcher(RESTAURANT_CONTROLLER_PATH_USERS+"/**",GET.toString()),
+            new AntPathRequestMatcher(IMAGE_CONTROLLER_PATH + "/**", GET.toString()),
+
             new AntPathRequestMatcher(RESTAURANT_CONTROLLER_PATH+"/popular",GET.toString()),
             new AntPathRequestMatcher(RESTAURANT_CONTROLLER_PATH+"/favorites",GET.toString()),
             new AntPathRequestMatcher(RESTAURANT_CONTROLLER_PATH+"/*"),

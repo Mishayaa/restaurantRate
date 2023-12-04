@@ -3,6 +3,7 @@ package com.example.restaurantestimate.controllers;
 import com.example.restaurantestimate.dto.ResponseMessage;
 import com.example.restaurantestimate.dto.ReviewDtoRequest;
 import com.example.restaurantestimate.dto.ReviewDtoUpdateRequest;
+import com.example.restaurantestimate.dto.restaurant.RestaurantCard;
 import com.example.restaurantestimate.dto.review.ReviewDto;
 import com.example.restaurantestimate.dto.review.ReviewPages;
 import com.example.restaurantestimate.services.ReviewService;

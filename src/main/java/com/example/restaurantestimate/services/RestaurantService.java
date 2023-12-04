@@ -20,6 +20,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -49,17 +52,33 @@ public class RestaurantService {
     private final RestaurantMapper restaurantMapper;
     private final PageMapper pageMapper;
     private final UserService userService;
+    private final ReviewService reviewService;
+
     private final ReviewCustomRepositoryImpl reviewCustomRepository;
 
     @Transactional
     public RestaurantCard addToFavorite(Long restaurantId) {
-        User user = userService.getCurrentUser();
-        Restaurant restaurant = restaurantRepository.findById(restaurantId).orElseThrow(() ->
-                new EntityNotFoundException(String.format("Restaurant with such ID: '%s' not found!", restaurantId)));
-        user.getFavorites().add(restaurant);
-        userService.updateUser(user);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        return restaurantMapper.toRestaurantCard(restaurant, user.getId());
+        if (authentication != null && authentication.isAuthenticated()) {
+            // Пользователь аутентифицирован
+            String username = authentication.getName();
+            User user = reviewService.getCurrentUser();
+            System.out.println(username);
+            System.out.println(user.getUsername());
+            Restaurant restaurant = restaurantRepository.findById(restaurantId).orElseThrow(() ->
+                    new EntityNotFoundException(String.format("Restaurant with such ID: '%s' not found!", restaurantId)));
+            System.out.println(user.getUsername());
+            user.getFavorites().add(restaurant);
+            userService.updateUser(user);
+            return restaurantMapper.toRestaurantCard(restaurant, user.getId());
+
+        } else {
+            // Пользователь не аутентифицирован
+            throw new RuntimeException("Пользователь не аутентифицирован");
+        }
+
+
     }
 
     @Transactional
