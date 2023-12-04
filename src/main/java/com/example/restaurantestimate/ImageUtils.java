@@ -18,7 +18,7 @@ import java.util.stream.Stream;
 public class ImageUtils {
     private final String imageDirectory;
 
-    public ImageUtils(@Value("${image-directory}") String imageDirectory) {
+    public ImageUtils(@Value("C:\\Users\\misha\\service-images") String imageDirectory) {
         this.imageDirectory = imageDirectory;
     }
 
