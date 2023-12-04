@@ -148,12 +148,12 @@ public class RestaurantController {
             @RequestParam(required = false, value = "findKp", defaultValue = "false")
             @Parameter(description = "Поиск по кинопоиску. true - искать на кинопоиске, "
                     + "false - в базе приложения.") Boolean findKp) {
-//if (Boolean.TRUE.equals(expanded)) {
+        if (Boolean.TRUE.equals(expanded)) {
             return new ResponseEntity<>(googleRestaurantService.getMoviesByName(name, findKp, page, limit), OK);
-//        } else {
-//            return new ResponseEntity<>(restaurantService.getMoviesByNameShortInfo(name, findKp, page, limit), OK);
-//
-//        }
+        } else {
+            return new ResponseEntity<>(restaurantService.getMoviesByNameShortInfo(name, findKp, page, limit), OK);
+
+        }
     }
 
     @Operation(summary = "Add movie to favourites")
