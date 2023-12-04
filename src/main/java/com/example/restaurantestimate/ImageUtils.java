@@ -18,7 +18,7 @@ import java.util.stream.Stream;
 public class ImageUtils {
     private final String imageDirectory;
 
-    public ImageUtils(@Value("C:\\Users\\misha\\restaurantestimate\\service-images") String imageDirectory) {
+    public ImageUtils(@Value("\\\\MIHAIL\\Users\\misha\\restaurantestimate\\service-images") String imageDirectory) {
         this.imageDirectory = imageDirectory;
     }
 
