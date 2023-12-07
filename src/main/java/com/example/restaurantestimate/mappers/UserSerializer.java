@@ -14,6 +14,7 @@ public class UserSerializer implements Function<User, UserDtoResponse> {
                 .id(user.getId())
                 .username(user.getUsername())
                 .email(user.getEmail())
+                .avatar(user.getAvatar())
                 .about(user.getAbout())
                 .build();
     }

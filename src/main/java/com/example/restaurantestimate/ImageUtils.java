@@ -1,9 +1,21 @@
 package com.example.restaurantestimate;
+
+import com.azure.identity.DefaultAzureCredentialBuilder;
+import com.azure.storage.blob.BlobContainerClient;
+import com.azure.storage.blob.BlobContainerClientBuilder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.EntityNotFoundException;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.Optional;
+
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -18,7 +30,7 @@ import java.util.stream.Stream;
 public class ImageUtils {
     private final String imageDirectory;
 
-    public ImageUtils(@Value("\\\\MIHAIL\\Users\\misha\\restaurantestimate\\service-images") String imageDirectory) {
+    public ImageUtils(@Value("C:\\\\Users\\\\misha\\\\service-images") String imageDirectory) {
         this.imageDirectory = imageDirectory;
     }
 
@@ -38,7 +50,6 @@ public class ImageUtils {
 
         return file.orElseThrow(() -> new EntityNotFoundException("Аватар не найден."));
     }
-
     public void deletePreviousUserImage(String prefix) throws IOException {
         List<File> files = new ArrayList<>();
         try (Stream<Path> entries = Files.walk(Path.of(imageDirectory))) {

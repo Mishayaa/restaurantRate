@@ -13,6 +13,7 @@ public class UserDtoResponse {
     private Long id;
     private String username;
     private String name;
+    private String avatar;
     private String email;
     private String about;
 
