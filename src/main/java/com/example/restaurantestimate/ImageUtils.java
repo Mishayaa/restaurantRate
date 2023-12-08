@@ -8,15 +8,14 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.EntityNotFoundException;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
+import java.io.*;
+import java.net.URL;
 import java.util.Optional;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -33,23 +32,26 @@ public class ImageUtils {
     public ImageUtils(@Value("${image-directory}") String imageDirectory) {
         this.imageDirectory = imageDirectory;
     }
-
-    public File getImage(String imageName) {
-        List<File> files = new ArrayList<>();
-        try (Stream<Path> entries = Files.walk(Path.of(imageDirectory))) {
-            files = entries
-                    .filter(Files::isRegularFile)
-                    .map(Path::toFile)
-                    .toList();
-        } catch (IOException e) {
-            log.error(e.getMessage());
-        }
-        Optional<File> file = files.stream()
-                .filter(e -> e.getName().equals(imageName))
-                .findFirst();
-
-        return file.orElseThrow(() -> new EntityNotFoundException("Аватар не найден."));
+    public InputStream getImage(String imageName) throws IOException {
+        URL imageUrl = new URL(imageDirectory + "/" + imageName);
+        return imageUrl.openStream();
     }
+//    public File getImage(String imageName) {
+//        List<File> files = new ArrayList<>();
+//        try (Stream<Path> entries = Files.walk(Path.of(imageDirectory))) {
+//            files = entries
+//                    .filter(Files::isRegularFile)
+//                    .map(Path::toFile)
+//                    .toList();
+//        } catch (IOException e) {
+//            log.error(e.getMessage());
+//        }
+//        Optional<File> file = files.stream()
+//                .filter(e -> e.getName().equals(imageName))
+//                .findFirst();
+//
+//        return file.orElseThrow(() -> new EntityNotFoundException("Аватар не найден."));
+//    }
     public void deletePreviousUserImage(String prefix) throws IOException {
         List<File> files = new ArrayList<>();
         try (Stream<Path> entries = Files.walk(Path.of(imageDirectory))) {
