@@ -30,7 +30,7 @@ import java.util.stream.Stream;
 public class ImageUtils {
     private final String imageDirectory;
 
-    public ImageUtils(@Value("C:\\Users\\misha\\OneDrive\\images") String imageDirectory) {
+    public ImageUtils(@Value("${image-directory}") String imageDirectory) {
         this.imageDirectory = imageDirectory;
     }
 
