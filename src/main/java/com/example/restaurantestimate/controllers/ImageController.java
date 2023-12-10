@@ -28,31 +28,7 @@ import java.io.IOException;
 public class ImageController {
     private final ImageUtils imageUtils;
     public static final String IMAGE_CONTROLLER_PATH = "/api/image";
-    @Operation(summary = "Эндпоинт получение аватара пользователя.", description = """
-            Эндпоинт предназначен для получение аватара пользователя по уникальной ссылке на аватар.
-            """)
-    @ApiResponses(value = {
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "Страница аватара пользователя.",
-                    content = {
-                            @Content(
-                                    mediaType = "application/json",
-                                    schema = @Schema(implementation = UserDtoResponse.class)
-                            )
-                    }
-            ),
-            @ApiResponse(
-                    responseCode = "422",
-                    description = "Нет аватара для данной ссылки.",
-                    content = {
-                            @Content(
-                                    mediaType = "application/json",
-                                    schema = @Schema(implementation = ResponseMessage.class)
-                            )
-                    }
-            )
-    })
+
     @GetMapping(value = IMAGE_CONTROLLER_PATH + "/{imageName}")
     public ResponseEntity<byte[]> testGetImage(@PathVariable(value = "imageName")
                                                @Parameter(description = "Ссылка на аватар пользователя",

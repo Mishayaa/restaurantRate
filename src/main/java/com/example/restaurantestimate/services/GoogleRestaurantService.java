@@ -82,7 +82,7 @@ public class GoogleRestaurantService {
     }
 
     @Transactional
-    public RestaurantPages getMoviesByName(String name, Boolean findOnKp, Integer page, Integer limit) {
+    public RestaurantPages getRestaurantsByName(String name, Boolean findOnKp, Integer page, Integer limit) {
         PageRequest pageRequest = PageRequest.of(page - 1, limit);
         Page<Restaurant> moviePage = restaurantCustomRepository.searchBy(name, pageRequest, "name");
         if (moviePage.isEmpty() || moviePage.get().count() < 0) {

@@ -187,7 +187,7 @@ public class RestaurantService {
     }
 
     @Transactional
-    public RestaurantPagesShort getMoviesByNameShortInfo(String name, Boolean findOnKp, Integer page, Integer limit) {
+    public RestaurantPagesShort getRestaurantsByNameShortInfo(String name, Boolean findOnKp, Integer page, Integer limit) {
 
         if (Boolean.TRUE.equals(findOnKp)) {
             RestaurantPages kpMovies = null;
