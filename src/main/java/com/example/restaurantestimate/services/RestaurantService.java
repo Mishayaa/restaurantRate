@@ -117,11 +117,11 @@ public class RestaurantService {
 
     @Transactional
     public RestaurantCard getRestaurantById(Long id) {
-        User user = userService.getCurrentUser();
         System.out.println("I am used");
         Optional<Restaurant> restaurantInDb = restaurantRepository.findById(id);
         Restaurant restaurant = restaurantInDb.orElseThrow(() ->
                 new EntityNotFoundException(String.format("Restaurant with such ID: '%s' was not found!", id)));
+        User user = userService.getCurrentUser();
         if (user != null) {
             return restaurantMapper.toRestaurantCard(restaurant, user.getId());
         } else {

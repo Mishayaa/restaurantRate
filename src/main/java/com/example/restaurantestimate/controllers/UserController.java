@@ -139,35 +139,35 @@ import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
                                                            @RequestBody UserDtoAboutRequest aboutRequest) {
             return new ResponseEntity<>(userService.updateAbout(userId, aboutRequest), OK);
         }
-        @Operation(summary = "Загрузить аватар пользователя.", description = """
-            Эндпоинт предназначен для загрузки изображение через form-data. Поддерживает форматы: jpeg, jpg, png, gif.
-            """)
-        @ApiResponses(value = {
-                @ApiResponse(
-                        responseCode = "200",
-                        description = "Обновленная информация о пользователе.",
-                        content = {
-                                @Content(
-                                        mediaType = "application/json",
-                                        schema = @Schema(implementation = UserDtoResponse.class)
-                                )
-                        }
-                ),
-                @ApiResponse(
-                        responseCode = "422",
-                        description = "Не удалось загрузить изображение.",
-                        content = {
-                                @Content(
-                                        mediaType = "application/json",
-                                        schema = @Schema(implementation = ResponseMessage.class)
-                                )
-                        }
-                )
-        })
-        @PostMapping(value = USER_CONTROLLER_PATH + "/avatar", consumes = MULTIPART_FORM_DATA_VALUE)
-        public ResponseEntity<UserDtoResponse> uploadAvatar(@RequestPart("image") MultipartFile multipartFile)
-                throws IOException {
-            return new ResponseEntity<>(userService.uploadImage(multipartFile), OK);
-        }
+//        @Operation(summary = "Загрузить аватар пользователя.", description = """
+//            Эндпоинт предназначен для загрузки изображение через form-data. Поддерживает форматы: jpeg, jpg, png, gif.
+//            """)
+//        @ApiResponses(value = {
+//                @ApiResponse(
+//                        responseCode = "200",
+//                        description = "Обновленная информация о пользователе.",
+//                        content = {
+//                                @Content(
+//                                        mediaType = "application/json",
+//                                        schema = @Schema(implementation = UserDtoResponse.class)
+//                                )
+//                        }
+//                ),
+//                @ApiResponse(
+//                        responseCode = "422",
+//                        description = "Не удалось загрузить изображение.",
+//                        content = {
+//                                @Content(
+//                                        mediaType = "application/json",
+//                                        schema = @Schema(implementation = ResponseMessage.class)
+//                                )
+//                        }
+//                )
+//        })
+//        @PostMapping(value = USER_CONTROLLER_PATH + "/avatar", consumes = MULTIPART_FORM_DATA_VALUE)
+//        public ResponseEntity<UserDtoResponse> uploadAvatar(@RequestPart("image") MultipartFile multipartFile)
+//                throws IOException {
+//            return new ResponseEntity<>(userService.updateAvatar(multipartFile), OK);
+//        }
 
     }

@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.RestController;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 
 @RestController
 @RequiredArgsConstructor
@@ -59,8 +58,8 @@ public class ImageController {
                                                @Parameter(description = "Ссылка на аватар пользователя",
                                                        example = "{username}_avatar.ext")
                                                String imageName) throws IOException {
-        InputStream image = imageUtils.getImage(imageName);
-        byte[] bytes = StreamUtils.copyToByteArray(image);
+        File image = imageUtils.getImage(imageName);
+        byte[] bytes = StreamUtils.copyToByteArray(image.toURI().toURL().openStream());
         return ResponseEntity
                 .ok()
                 .contentType(MediaType.IMAGE_JPEG)

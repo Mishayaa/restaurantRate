@@ -6,7 +6,6 @@ import com.example.restaurantestimate.dto.user.UserDtoResponse;
 import com.example.restaurantestimate.entities.Restaurant;
 import com.example.restaurantestimate.entities.User;
 import com.example.restaurantestimate.exceptions.CustomAccessDeniedException;
-import com.example.restaurantestimate.exceptions.UploadAvatarException;
 import com.example.restaurantestimate.mappers.UserSerializer;
 import com.example.restaurantestimate.repositories.UserRepository;
 import com.example.restaurantestimate.ImageUtils;
@@ -26,11 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityNotFoundException;
-import java.io.File;
 import java.io.IOException;
-import java.util.Optional;
-
-import static com.example.restaurantestimate.controllers.ImageController.IMAGE_CONTROLLER_PATH;
 
 
 @Service
@@ -89,27 +84,29 @@ public class UserService implements UserDetailsService {
     public User getCurrentUser() {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         System.out.println(username);
-        return userRepository.findByUsername(username)
-                .orElseThrow(() -> new EntityNotFoundException("Пользователь не найден!"));
+        return userRepository.findByUsername(username).isEmpty()?null:userRepository.findByUsername(username).get();
     }
-    public UserDtoResponse uploadImage(MultipartFile multipartFile) throws IOException {
-        if (!multipartFile.isEmpty()) {
-            String contentType = multipartFile.getContentType();
-            if (contentType != null && ImageUtils.isSupportedContentType(contentType)) {
-                User user = getCurrentUser();
-                imageUtils.deletePreviousUserImage(user.getUsername());
-                String filepath = imageUtils.buildFile(multipartFile.getContentType(), user.getUsername());
-                multipartFile.transferTo(new File(filepath));
-                String link = filepath.substring(filepath.lastIndexOf("/"));
-                link = IMAGE_CONTROLLER_PATH + link;
-                user.setAvatar(link);
-                userRepository.save(user);
-                return userSerializer.apply(user);
-            }
-            throw new UploadAvatarException("Неподдерживаемый тип файла.");
-        }
-        throw new UploadAvatarException("Файл пустой!");
-    }
+
+//    public UserDtoResponse uploadImage(MultipartFile multipartFile) throws IOException {
+//        if (!multipartFile.isEmpty()) {
+//            String contentType = multipartFile.getContentType();
+//            if (contentType != null && ImageUtils.isSupportedContentType(contentType)) {
+//                User user = getCurrentUser();
+//                imageUtils.deletePreviousUserImage(user.getUsername());
+//                String filepath = imageUtils.buildFile(multipartFile.getContentType(), user.getUsername());
+//                multipartFile.transferTo(new File(filepath));
+//                String link = filepath.substring(filepath.lastIndexOf("/"));
+//                link = IMAGE_CONTROLLER_PATH + link;
+//                user.setAvatar(link);
+//                userRepository.save(user);
+//                return userSerializer.apply(user);
+//            }
+//            throw new UploadAvatarException("Неподдерживаемый тип файла.");
+//        }
+//        throw new UploadAvatarException("Файл пустой!");
+//    }
+
+
 
     public void updateUser(User user) {
         userRepository.save(user);

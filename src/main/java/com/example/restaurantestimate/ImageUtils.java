@@ -32,26 +32,23 @@ public class ImageUtils {
     public ImageUtils(@Value("${image-directory}") String imageDirectory) {
         this.imageDirectory = imageDirectory;
     }
-    public InputStream getImage(String imageName) throws IOException {
-        URL imageUrl = new URL(imageDirectory + "/" + imageName);
-        return imageUrl.openStream();
+
+    public File getImage(String imageName) {
+        List<File> files = new ArrayList<>();
+        try (Stream<Path> entries = Files.walk(Path.of(imageDirectory))) {
+            files = entries
+                    .filter(Files::isRegularFile)
+                    .map(Path::toFile)
+                    .toList();
+        } catch (IOException e) {
+            log.error(e.getMessage());
+        }
+        Optional<File> file = files.stream()
+                .filter(e -> e.getName().equals(imageName))
+                .findFirst();
+
+        return file.orElseThrow(() -> new EntityNotFoundException("Аватар не найден."));
     }
-//    public File getImage(String imageName) {
-//        List<File> files = new ArrayList<>();
-//        try (Stream<Path> entries = Files.walk(Path.of(imageDirectory))) {
-//            files = entries
-//                    .filter(Files::isRegularFile)
-//                    .map(Path::toFile)
-//                    .toList();
-//        } catch (IOException e) {
-//            log.error(e.getMessage());
-//        }
-//        Optional<File> file = files.stream()
-//                .filter(e -> e.getName().equals(imageName))
-//                .findFirst();
-//
-//        return file.orElseThrow(() -> new EntityNotFoundException("Аватар не найден."));
-//    }
     public void deletePreviousUserImage(String prefix) throws IOException {
         List<File> files = new ArrayList<>();
         try (Stream<Path> entries = Files.walk(Path.of(imageDirectory))) {
